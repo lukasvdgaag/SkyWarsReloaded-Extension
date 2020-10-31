@@ -1,0 +1,60 @@
+joined_arena: '&aYou joined the arena: %name%'
+cannot_join: '&cYou can''t join this game right now'
+invalid_arena: '&cThere is no arena with that name'
+no_permission: '&cYou don''t have permission to do this'
+too_many_join_arguments: '&cYou gave too many arguments. Use /sw join [arena]'
+solo_join: '&7Joining a solo arena...'
+team_join: '&7Joining a team arena...'
+no_solo_arenas: '&cWe couldn''t find any free solo arenas'
+no_team_arenas: '&cWe couldn''t find any free team arenas'
+not_ingame: '&cYou must be in a game to leave one'
+left_game: '&cYou left your game'
+
+must_specify_world: '&cYou must specify a world to import. Make sure this isn''t an arena already'
+invalid_world: '&cThere is no world with that name'
+arena_already_exists: '&cThere already is a map with that name'
+import_starting: '&7Starting importing map %map%...'
+import_succeeded: '&aImport for map %map% succeeded'
+start_legacy_load_delay: '&7Starting legacy load in 5 seconds...'
+start_legacy_load_now: '&7Now starting legacy load...'
+chests_registered: '&aRegistered %amount% new chests'
+no_chests_found: '&cCouldn''t find any new chests'
+spawns_registered: '&aRegistered %amount% player spawns'
+no_spawns_found: '&cCouldn''t find any player spawns. Make sure to add at least 2 spawns before registering the map.'
+import_done_note: '&7Make sure to save and register the map once you''ve done everything you want!'
+import_error: '&cSomething went wrong whilst importing the map'
+too_many_import_arguments: '&cYou gave too many arguments. Use /sw import [world]'
+
+display_name_set: '&aThe display name of the map %map% has been set to ''%name%&a'''
+too_few_display_name_arguments: '&cYou gave too few arguments. Use /swm name [map] [name]'
+creator_set: '&aThe creator of the map %map% has been set to ''%creator%'''
+too_few_creator_arguments: '&cYou gave too few arguments. Use /swm creator [map] [creator]'
+
+send_incorrect_usage: '&cYou gave too few arguments. Use /sw send [player] [game]'
+invalid_player: '&cThere is no player with that name'
+send_arena: '&aYou sent %player% to the map %name%'
+cannot_join_other: '&c%player% cannot join this game right noww'
+already_ingame_other: '&c%player% is already in a game'
+
+select_cosmetic_successful: '&aYour %type% has been set to ''%name%&a'''
+select_cosmetic_not_found: '&cThere is no %type% with that name'
+select_cosmetic_invalid_type: '&cInvalid type! Choose between: winsound, killsound, glasscolor, taunt, particle, projectile'
+select_cosmetic_incorrect_usage: '&cIncorrect usage. Use: /sw select [type] [selected]'
+select_cosmetic_not_allowed: '&cYou are not allowed to select this %type%'
+
+autovotes_applied: '&aYour previous votes have automatically been selected!'
+
+no_arena_specified_message: '&cYou must give more arguments. Use /sw join [arena]'
+game_must_be_offline: '&cThe target game must be OFFLINE, you will have to unregister it using &o/swm unregister'
+
+renamed_arena: '&aYou renamed the arena to %arena%. &c&lYou have to reload Skywars using ''/sw reload'' to register the new map'
+too_few_rename_arguments: '&cYou gave too few arguments. Use /swm rename [map] [new-name]'
+
+cagetype_set: '&aYou successfully set the cage type of arena %map% to %type%'
+invalid_cagetype: '&cThere is no cage type with that name. Select one from below:'
+
+
+no_arena_specified_action: OPEN_JOIN_MENU
+override_item_join_actions: true
+enable_autoselect_game_options: true
+enable_autoselect_kit: true

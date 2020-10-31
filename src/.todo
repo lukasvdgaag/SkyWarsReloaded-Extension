@@ -1,0 +1,43 @@
+# version: 1.5.1
+Fixed random games not actually joining random games, but always the last one.
+Fixed the "/sw join team" command to display some weird messages, it will now put you in a team game.
+Fixed the inventoryclickevent bug popping up when a player clicks their inventory.
+
+# version: 1.5.0
+Added support for SkyWarsReloaded v5
+Fixed some bugs regarding the auto vote select options.
+
+# version: 1.4.3
+Fixed NPC joining not working
+Fixed RANDOM_TEAM_JOIN and RANDOM_SOLO_JOIN where it would give an error message
+Recoded the join menu so it fits the latest update of SWR where item lores were configurable
+
+# version: 1.4.2
+Added option to disable auto-select for game options and player kits
+Added command to rename arenas
+
+# version: 1.4.1
+Added NPCs
+RANDOM_JOIN actions are now picking the highest available game
+Now compatible with 1.15 and SWR 4.3.0
+
+# version: 1.3.1
+Added support for the new AdditionsPlus Events API.
+Added events for the AdditionsPlus plugin
+Fixed some small bugs.
+
+
+////////////////////
+
+# version: 1.2.3
+Added '/sw send [player] [game]'
+
+# version: 1.2.2
+Added '/leave' command to leave a game
+Added PaperSpigot support
+
+# version: 1.2.1
+Added '/swm creator' that allows spaces in the creator name
+Added '/swm name' that allows spaces in the display name
+Added '/sw select' command to select a specific player option
+Fixed commands not supporting the full command, before just the alias (short command)
