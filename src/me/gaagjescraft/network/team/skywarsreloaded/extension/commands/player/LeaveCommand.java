@@ -1,4 +1,4 @@
-package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.general;
+package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player;
 
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;

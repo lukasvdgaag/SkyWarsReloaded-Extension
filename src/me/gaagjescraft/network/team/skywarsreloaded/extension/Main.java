@@ -1,8 +1,9 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.general.*;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.*;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.ExtensionCmdManager;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.admin.ReloadCmd;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player.LeaveCommand;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.events.AdditionsPlusHandler;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.events.SWEvents;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.FileManager;
@@ -12,6 +13,7 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMe
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,7 +24,14 @@ import java.util.logging.Level;
 public class Main extends JavaPlugin implements Listener {
 
     private static Main m;
-    public static Main get() { return m; }
+
+    public static Main get() {
+        return m;
+    }
+
+    public static String c(String a) {
+        return ChatColor.translateAlternateColorCodes('&', a);
+    }
 
     @Override
     public void onEnable() {
@@ -44,16 +53,16 @@ public class Main extends JavaPlugin implements Listener {
             return;
         }
 
-        File f = new File(getDataFolder(),"config.yml");
-        if (!f.exists()){
-            saveResource("config.yml",false);
+        File f = new File(getDataFolder(), "config.yml");
+        if (!f.exists()) {
+            saveResource("config.yml", false);
             Bukkit.getLogger().log(Level.INFO, "Created the config.yml");
         }
 
         FileManager.register(new PlayerFile());
         FileManager.registerAll();
-        Bukkit.getPluginManager().registerEvents(new SWEvents(),this);
-
+        Bukkit.getPluginManager().registerEvents(new SWEvents(), this);
+        Bukkit.getPluginManager().registerEvents(new ReloadCmd(), this);
 
         getConfig().options().copyDefaults(true);
         getConfig().options().copyHeader(true);
@@ -99,7 +108,7 @@ public class Main extends JavaPlugin implements Listener {
         reloadConfig();
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            Bukkit.getLogger().log(Level.INFO,"Found PlaceholderAPI. We hooked into it and registered the skywars placeholders");
+            Bukkit.getLogger().log(Level.INFO, "Found PlaceholderAPI. We hooked into it and registered the skywars placeholders");
             Bukkit.getLogger().log(Level.INFO, "The official Skywars placeholders will be overwritten.");
         }
         if (Bukkit.getPluginManager().isPluginEnabled("Additions")) {
@@ -113,8 +122,7 @@ public class Main extends JavaPlugin implements Listener {
             }
         }
         if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
-            Bukkit.getPluginManager().registerEvents(new NPCHandler(),this);
-            Bukkit.getPluginManager().registerEvents(new CreateNPCCommand(),this);
+            Bukkit.getPluginManager().registerEvents(new NPCHandler(), this);
             NPCFile file = new NPCFile();
             file.setup();
             file.save();
@@ -124,16 +132,8 @@ public class Main extends JavaPlugin implements Listener {
 
         getCommand("leave").setExecutor(new LeaveCommand());
 
-        Bukkit.getPluginManager().registerEvents(new JoinCommand(),this);
-        Bukkit.getPluginManager().registerEvents(new CreatorCommand(),this);
-        Bukkit.getPluginManager().registerEvents(new ImportCommand(),this);
-        Bukkit.getPluginManager().registerEvents(new NameCommand(),this);
-        Bukkit.getPluginManager().registerEvents(new SendCommand(),this);
-        Bukkit.getPluginManager().registerEvents(new SelectCosmeticCommand(),this);
-        Bukkit.getPluginManager().registerEvents(new SingleJoinMenu(),this);
-        Bukkit.getPluginManager().registerEvents(new RenameCommand(),this);
-        Bukkit.getPluginManager().registerEvents(new CageTypeCommand(), this);
-
+        new ExtensionCmdManager().importCmds();
+        Bukkit.getPluginManager().registerEvents(new SingleJoinMenu(), this);
         Bukkit.getPluginManager().registerEvents(new KitCreationMenu(), this);
 
     }
