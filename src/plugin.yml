@@ -1,0 +1,16 @@
+name: Skywars-Extension
+description: Extension for SkywarsReloaded. Adds some cool commands.
+depend:
+  - Skywars
+softdepend:
+  - Citizens
+  - Additions
+author: GaagjesCraft Network Team (GCNT)
+website: https://gaagjescraft.net/skywars/
+version: 1.7.0
+main: me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension
+
+commands:
+  leave:
+    description: Leave command
+    usage: /leave
