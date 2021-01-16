@@ -3,8 +3,8 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.commands;
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
-import com.walrusone.skywarsreloaded.commands.CmdManager;
 import com.walrusone.skywarsreloaded.commands.KitCmdManager;
+import com.walrusone.skywarsreloaded.commands.MainCmdManager;
 import com.walrusone.skywarsreloaded.commands.MapCmdManager;
 import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
@@ -91,7 +91,7 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
         } else if (command.getName().equalsIgnoreCase("skywars")) {
 
             if (args.length == 1) {
-                for (BaseCmd cmd : CmdManager.getCommands()) {
+                for (BaseCmd cmd : MainCmdManager.getCommands()) {
                     if (Util.get().hp(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }

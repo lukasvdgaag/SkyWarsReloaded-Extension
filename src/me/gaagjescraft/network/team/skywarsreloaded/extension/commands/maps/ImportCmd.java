@@ -5,7 +5,7 @@ import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.*;
 import org.bukkit.block.Beacon;
 import org.bukkit.block.Block;
@@ -31,42 +31,42 @@ public class ImportCmd extends BaseCmd {
     @Override
     public boolean run() {
         if (!sender.hasPermission("sw.map.import")) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("no_permission")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_permission")));
             return true;
         }
         
         String worldName = args[1];
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("invalid_world")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_world")));
             return true;
         }
         if (GameMap.getMap(worldName) != null)  {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("arena_already_exists")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("arena_already_exists")));
             return true;
         }
         
-        sender.sendMessage(Main.c(Main.get().getConfig().getString("import_starting").replace("%map%", worldName)));
+        sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_starting").replace("%map%", worldName)));
 
         try {
             Field field = GameMap.class.getDeclaredField("arenas");
             field.setAccessible(true);
             ((ArrayList<GameMap>) field.get(new GameMap(worldName))).add(new GameMap(worldName));
         } catch (Exception e) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("import_error")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_error")));
             return true;
         }
         
         GameMap map = GameMap.getMap(worldName); 
         if (map == null) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("import_error")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_error")));
             return true;
         }
         
         map.setEditing(true);
         world.setAutoSave(true);
         
-        sender.sendMessage(Main.c(Main.get().getConfig().getString("import_succeeded").replace("%map%", worldName)));
+        sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_succeeded").replace("%map%", worldName)));
         if (sender instanceof Player) {
             player = (Player) sender;
             player.teleport(new Location(world, 0, 75, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -74,10 +74,10 @@ public class ImportCmd extends BaseCmd {
             player.setAllowFlight(true);
             player.setFlying(true);
         }
-        sender.sendMessage(Main.c(Main.get().getConfig().getString("start_legacy_load_delay")));
+        sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("start_legacy_load_delay")));
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.get(), () -> {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("start_legacy_load_now")));
+        Bukkit.getScheduler().scheduleSyncDelayedTask(SWExtension.get(), () -> {
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("start_legacy_load_now")));
             int mapSize = SkyWarsReloaded.getCfg().getMaxMapSize();
             int max1 = mapSize / 2;
             int min1 = -mapSize / 2;
@@ -132,16 +132,16 @@ public class ImportCmd extends BaseCmd {
             } catch (Exception ignored) {}
             
             if (chests > 0) {
-                sender.sendMessage(Main.c(Main.get().getConfig().getString("chests_registered").replace("%amount%", "" + chests)));
+                sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("chests_registered").replace("%amount%", "" + chests)));
             } else {
-                sender.sendMessage(Main.c(Main.get().getConfig().getString("no_chests_found")));
+                sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_chests_found")));
             }
             if (spawns > 0) {
-                sender.sendMessage(Main.c(Main.get().getConfig().getString("spawns_registered").replace("%amount%", "" + spawns)));
+                sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("spawns_registered").replace("%amount%", "" + spawns)));
             } else {
-                sender.sendMessage(Main.c(Main.get().getConfig().getString("no_spawns_found")));
+                sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_spawns_found")));
             }
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("import_done_note")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_done_note")));
         }, 100);
         return true;
     }

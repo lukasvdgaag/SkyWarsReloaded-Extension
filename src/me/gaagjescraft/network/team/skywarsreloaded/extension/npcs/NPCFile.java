@@ -1,7 +1,7 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.npcs;
 
 import com.google.common.collect.Lists;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.FileManager;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -19,13 +19,13 @@ public class NPCFile implements FileManager {
 
     private static FileConfiguration fc = null;
     private String fname = "npcs.yml";
-    private File f = new File(Main.get().getDataFolder(), fname);
+    private File f = new File(SWExtension.get().getDataFolder(), fname);
 
     @Override
     public void setup() {
         if (!f.exists()) {
-            if (Main.get().getResource(fname) != null) {
-                Main.get().saveResource(fname, false);
+            if (SWExtension.get().getResource(fname) != null) {
+                SWExtension.get().saveResource(fname, false);
                 Bukkit.getConsoleSender().sendMessage("Set up " + fname + " from resource");
             } else {
                 try {

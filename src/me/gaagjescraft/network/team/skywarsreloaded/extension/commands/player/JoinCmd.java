@@ -11,8 +11,8 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.NoArenaAction;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -38,12 +38,12 @@ public class JoinCmd extends BaseCmd {
     public boolean run() {
         GameMap a = MatchManager.get().getPlayerMap(player);
         if (a != null) {
-            player.sendMessage(Main.c(Main.get().getConfig().getString("already_ingame")));
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("already_ingame")));
             return true;
         }
 
         if (args.length == 1) {
-            NoArenaAction action = NoArenaAction.valueOf(Main.get().getConfig().getString("no_arena_specified_action"));
+            NoArenaAction action = NoArenaAction.valueOf(SWExtension.get().getConfig().getString("no_arena_specified_action"));
             if (action == NoArenaAction.OPEN_CUSTOM_JOIN_MENU) {
                 new SingleJoinMenu().openMenu(player, 1);
                 return true;
@@ -85,7 +85,7 @@ public class JoinCmd extends BaseCmd {
                 }
             }
             else if (action == NoArenaAction.SEND_MESSAGE) {
-                player.sendMessage(Main.c(Main.get().getConfig().getString("no_arena_specified_message")));
+                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_arena_specified_message")));
                 return true;
             }
             else {
@@ -100,7 +100,7 @@ public class JoinCmd extends BaseCmd {
                 if (player.hasPermission("sw.join.solo")) {
                     joinGame(player, GameType.SINGLE);
                 } else {
-                    player.sendMessage(Main.c(Main.get().getConfig().getString("no_permission")));
+                    player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_permission")));
                 }
                 return true;
             }
@@ -108,7 +108,7 @@ public class JoinCmd extends BaseCmd {
                 if (player.hasPermission("sw.join.team")) {
                     joinGame(player, GameType.TEAM);
                 } else {
-                    player.sendMessage(Main.c(Main.get().getConfig().getString("no_permission")));
+                    player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_permission")));
                 }
                 return true;
             }
@@ -116,9 +116,9 @@ public class JoinCmd extends BaseCmd {
                 if (player.hasPermission("sw.join.arena")) {
                     if (SkyWarsReloaded.getCfg().bungeeMode() && SkyWarsReloaded.getCfg().isLobbyServer()) {
                         SWRServer server = null;
-                        for (int i = 0; i < SWRServer.getServers().size(); i++) {
-                            if (SWRServer.getServers().get(i).getServerName().equals(arena)) {
-                                server = SWRServer.getServers().get(i);
+                        for (int i = 0; i < SWRServer.getServersCopy().size(); i++) {
+                            if (SWRServer.getServersCopy().get(i).getServerName().equals(arena)) {
+                                server = SWRServer.getServersCopy().get(i);
                             }
                         }
 
@@ -127,14 +127,14 @@ public class JoinCmd extends BaseCmd {
                                 server.setPlayerCount(server.getPlayerCount() + 1);
                                 server.updateSigns();
                                 SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", server.getServerName());
-                                player.sendMessage(Main.c(Main.get().getConfig().getString("joined_arena").replace("%name%", arena)));
+                                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", arena)));
                             } else {
                                 // sending a message because the map is unplayable
-                                player.sendMessage(Main.c(Main.get().getConfig().getString("cannot_join")));
+                                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("cannot_join")));
                             }
                         } else {
                             // sending a message because the arena doesn't exist
-                            player.sendMessage(Main.c(Main.get().getConfig().getString("invalid_arena")));
+                            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_arena")));
                         }
                     }
                     else {
@@ -148,17 +148,17 @@ public class JoinCmd extends BaseCmd {
                                 // here i'm actually adding the player to the map. So like joining it
                                 boolean b = map.addPlayers((TeamCard) null, player);
                                 if (b) {
-                                    player.sendMessage(Main.c(Main.get().getConfig().getString("joined_arena").replace("%name%", arena)));
+                                    player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", arena)));
                                 } else {
                                     player.sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
                                 }
                             } else {
                                 // sending a message because the map is unplayable
-                                player.sendMessage(Main.c(Main.get().getConfig().getString("cannot_join")));
+                                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("cannot_join")));
                             }
                         } else {
                             // sending a message because the arena doesn't exist
-                            player.sendMessage(Main.c(Main.get().getConfig().getString("invalid_arena")));
+                            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_arena")));
                         }
                     }
                 }
@@ -172,25 +172,25 @@ public class JoinCmd extends BaseCmd {
         List<GameMap> maps = GameMap.getPlayableArenas(type);
         if (maps.isEmpty()) {
             if (type == GameType.SINGLE) {
-                player.sendMessage(Main.c(Main.get().getConfig().getString("no_solo_arenas")));
+                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_solo_arenas")));
             }
             else if (type == GameType.TEAM) {
-                player.sendMessage(Main.c(Main.get().getConfig().getString("no_team_arenas")));
+                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_team_arenas")));
             }
             else {
-                player.sendMessage(Main.c(Main.get().getConfig().getString("no_arenas_found")));
+                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_arenas_found")));
             }
             return;
         }
 
         if (type == GameType.SINGLE) {
-            player.sendMessage(Main.c(Main.get().getConfig().getString("solo_join")));
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("solo_join")));
         }
         else if (type == GameType.TEAM) {
-            player.sendMessage(Main.c(Main.get().getConfig().getString("team_join")));
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("team_join")));
         }
         else {
-            player.sendMessage(Main.c(Main.get().getConfig().getString("join_random_arena")));
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("join_random_arena")));
         }
 
         HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
@@ -208,7 +208,7 @@ public class JoinCmd extends BaseCmd {
             b = map.addPlayers((TeamCard) null, player);
         }
         if (b) {
-            player.sendMessage(Main.c(Main.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
         } else {
             player.sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
         }

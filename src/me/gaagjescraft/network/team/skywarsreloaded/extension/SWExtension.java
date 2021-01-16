@@ -8,8 +8,9 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.events.AdditionsPl
 import me.gaagjescraft.network.team.skywarsreloaded.extension.events.SWEvents;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.FileManager;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.PlayerFile;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.KitCreationMenu;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.ExtendedKitCreationMenu;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitCreationMenu;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler;
 import org.bukkit.Bukkit;
@@ -21,13 +22,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.logging.Level;
 
-public class Main extends JavaPlugin implements Listener {
+public class SWExtension extends JavaPlugin implements Listener {
 
-    private static Main m;
+    private static SWExtension m;
+    private KitCreationMenu kitMenu;
+    private ExtendedKitCreationMenu extendedKitCreationMenu;
 
-    public static Main get() {
+    public static SWExtension get() {
         return m;
     }
+
+    public static KitCreationMenu getKitMenu() {
+        return m.kitMenu;
+    }
+    public static ExtendedKitCreationMenu getExtendedKitMenu() { return m.extendedKitCreationMenu; }
 
     public static String c(String a) {
         return ChatColor.translateAlternateColorCodes('&', a);
@@ -135,7 +143,9 @@ public class Main extends JavaPlugin implements Listener {
         new ExtensionCmdManager().importCmds();
         Bukkit.getPluginManager().registerEvents(new SingleJoinMenu(), this);
         Bukkit.getPluginManager().registerEvents(new KitCreationMenu(), this);
-
+        Bukkit.getPluginManager().registerEvents(new ExtendedKitCreationMenu(), this);
+        kitMenu = new KitCreationMenu();
+        extendedKitCreationMenu = new ExtendedKitCreationMenu();
     }
 
     public boolean isNewVersion() {

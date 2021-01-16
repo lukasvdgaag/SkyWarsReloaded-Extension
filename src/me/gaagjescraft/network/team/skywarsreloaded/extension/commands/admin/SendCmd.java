@@ -4,7 +4,7 @@ import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -23,25 +23,25 @@ public class SendCmd extends BaseCmd {
         Player p = Bukkit.getPlayer(args[1]);
         GameMap map = GameMap.getMap(args[2]);
         if (p == null) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("invalid_player")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_player")));
             return true;
         }
         if (map == null) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("invalid_arena")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_arena")));
             return true;
         }
         if (MatchManager.get().getGame(p) != null) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("already_ingame_other").replace("%player%", p.getName())));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("already_ingame_other").replace("%player%", p.getName())));
             return true;
         }
         if (!map.canAddPlayer()) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("cannot_join_other").replace("%player%", p.getName())));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("cannot_join_other").replace("%player%", p.getName())));
             return true;
         }
 
         boolean b = map.addPlayers(null, p);
         if (b) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("send_arena").replace("%name%", map.getDisplayName()).replace("%player%", p.getName())));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("send_arena").replace("%name%", map.getDisplayName()).replace("%player%", p.getName())));
         } else {
             sender.sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
         }

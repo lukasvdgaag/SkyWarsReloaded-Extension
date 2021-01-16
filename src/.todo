@@ -1,3 +1,12 @@
+# 1.7.0
+Added fancy interactive kit creation and manager menu.
+Added a "/swk delete" command which allows you to delete a kit.
+Added a "/swk create" command which will override the main skywars kit creation command.
+Added a "/swk edit" command which opens the kit editor menu.
+
+# 1.6.1
+Fixed a bug with auto votes/kit selection only working on team games.
+
 # version: 1.5.1
 Fixed random games not actually joining random games, but always the last one.
 Fixed the "/sw join team" command to display some weird messages, it will now put you in a team game.

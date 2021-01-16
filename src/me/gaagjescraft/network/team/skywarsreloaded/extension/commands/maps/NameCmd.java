@@ -2,7 +2,7 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps;
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 
 public class NameCmd extends BaseCmd {
 
@@ -20,7 +20,7 @@ public class NameCmd extends BaseCmd {
         GameMap map = GameMap.getMap(mapName);
 
         if (map == null) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("invalid_arena")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_arena")));
             return true;
         }
 
@@ -30,7 +30,7 @@ public class NameCmd extends BaseCmd {
         }
 
         map.setDisplayName(b.toString().trim());
-        sender.sendMessage(Main.c(Main.get().getConfig().getString("display_name_set").replace("%map%",map.getName()).replace("%name%", b.toString())));
+        sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("display_name_set").replace("%map%",map.getName()).replace("%name%", b.toString())));
         return true;
     }
 }

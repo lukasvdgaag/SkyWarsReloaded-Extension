@@ -2,7 +2,7 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.files;
 
 import com.walrusone.skywarsreloaded.enums.Vote;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.features.AutoRejoinType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,7 +20,7 @@ public class PlayerFile implements FileManager {
     private static HashMap<Player, AutoRejoinType> autoJoinTypes= new HashMap<>();
     private static FileConfiguration fc = null;
     private String fname = "players.yml";
-    private File f = new File(Main.get().getDataFolder(), fname);
+    private File f = new File(SWExtension.get().getDataFolder(), fname);
     private Player player;
 
     public PlayerFile() { }
@@ -32,8 +32,8 @@ public class PlayerFile implements FileManager {
     @Override
     public void setup() {
         if (!f.exists()) {
-            if (Main.get().getResource(fname) != null) {
-                Main.get().saveResource(fname, false);
+            if (SWExtension.get().getResource(fname) != null) {
+                SWExtension.get().saveResource(fname, false);
                 Bukkit.getConsoleSender().sendMessage("Set up " + fname + " from resource");
             } else {
                 try {
@@ -155,7 +155,7 @@ public class PlayerFile implements FileManager {
 
     public boolean canAutoJoin() {
         if (autoJoinTimes.containsKey(player) && autoJoinTimes.containsKey(player)) {
-            long lastingTime = Main.get().getConfig().getInt("autojoin_lasting_time",30) * 60000;
+            long lastingTime = SWExtension.get().getConfig().getInt("autojoin_lasting_time",30) * 60000;
             long startTime = autoJoinTimes.get(player);
             long endTime = startTime+lastingTime;
             long currentTime = Calendar.getInstance().getTimeInMillis();

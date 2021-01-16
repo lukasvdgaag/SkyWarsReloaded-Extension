@@ -7,7 +7,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -45,7 +45,7 @@ public class SingleJoinMenu implements Listener {
         int pages = 1;
 
         List<GameMap> maps = GameMap.getMaps();
-        List<SWRServer> servers = SWRServer.getServers();
+        List<SWRServer> servers = SWRServer.getServersCopy();
 
         int arenaSize = 0;
         if (!SkyWarsReloaded.getCfg().bungeeMode()) {
@@ -283,7 +283,7 @@ public class SingleJoinMenu implements Listener {
                         server.setPlayerCount(server.getPlayerCount() + 1);
                         server.updateSigns();
                         SkyWarsReloaded.get().sendBungeeMsg(p, "Connect", server.getServerName());
-                        p.sendMessage(c(Main.get().getConfig().getString("joined_arena").replace("%name%", server.getServerName())));
+                        p.sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", server.getServerName())));
                         return;
                     }
                 }
@@ -293,7 +293,7 @@ public class SingleJoinMenu implements Listener {
                         GameMap map = maps.get(slot);
                         boolean b = map.addPlayers((TeamCard) null, p);
                         if (b) {
-                            p.sendMessage(c(Main.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                            p.sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
                         } else {
                             p.sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
                         }

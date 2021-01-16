@@ -2,10 +2,14 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.commands;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
-import com.walrusone.skywarsreloaded.commands.CmdManager;
+import com.walrusone.skywarsreloaded.commands.KitCmdManager;
+import com.walrusone.skywarsreloaded.commands.MainCmdManager;
 import com.walrusone.skywarsreloaded.commands.MapCmdManager;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.admin.CreateNPCCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.admin.SendCmd;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.kits.CreateKit;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.kits.DeleteKit;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.kits.EditKit;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.CageTypeCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.ImportCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.NameCmd;
@@ -28,6 +32,7 @@ public class ExtensionCmdManager {
             loadAdminCmds();
             loadPlayerCmds();
             loadMapCmds();
+            loadKitCmds();
 
             Bukkit.getPluginCommand("skywars").setTabCompleter(new ExtensionCmdTabCompletion());
             Bukkit.getPluginCommand("swmap").setTabCompleter(new ExtensionCmdTabCompletion());
@@ -36,7 +41,7 @@ public class ExtensionCmdManager {
     }
 
     private void loadAdminCmds() throws NoSuchFieldException, IllegalAccessException {
-        CmdManager cm = (CmdManager) Bukkit.getPluginCommand("skywars").getExecutor();
+        MainCmdManager cm = (MainCmdManager) Bukkit.getPluginCommand("skywars").getExecutor();
         Field adminCmdsField = cm.getClass().getDeclaredField("admincmds");
         adminCmdsField.setAccessible(true);
         List<BaseCmd> adminCommands = (List<BaseCmd>) adminCmdsField.get(cm);
@@ -51,7 +56,7 @@ public class ExtensionCmdManager {
     }
 
     private void loadPlayerCmds() throws NoSuchFieldException, IllegalAccessException {
-        CmdManager cm = (CmdManager) Bukkit.getPluginCommand("skywars").getExecutor();
+        MainCmdManager cm = (MainCmdManager) Bukkit.getPluginCommand("skywars").getExecutor();
         Field playerCmdsField = cm.getClass().getDeclaredField("pcmds");
         playerCmdsField.setAccessible(true);
         List<BaseCmd> playerCommands = (List<BaseCmd>) playerCmdsField.get(cm);
@@ -60,6 +65,21 @@ public class ExtensionCmdManager {
         playerCommands.add(new JoinCmd("sw"));
         playerCommands.removeIf(cmd -> cmd.cmdName.equalsIgnoreCase("select"));
         playerCommands.add(new SelectCosmeticCmd("sw"));
+        playerCmdsField.set(cm, playerCommands);
+    }
+
+    private void loadKitCmds() throws NoSuchFieldException, IllegalAccessException {
+        KitCmdManager cm = (KitCmdManager) Bukkit.getPluginCommand("swkit").getExecutor();
+        Field playerCmdsField = cm.getClass().getDeclaredField("kitcmds");
+        playerCmdsField.setAccessible(true);
+        List<BaseCmd> playerCommands = (List<BaseCmd>) playerCmdsField.get(cm);
+
+        playerCommands.removeIf(cmd -> cmd.cmdName.equalsIgnoreCase("edit"));
+        playerCommands.add(new EditKit("kit"));
+        playerCommands.removeIf(cmd -> cmd.cmdName.equalsIgnoreCase("create"));
+        playerCommands.add(new CreateKit("kit"));
+        playerCommands.removeIf(cmd -> cmd.cmdName.equalsIgnoreCase("delete"));
+        playerCommands.add(new DeleteKit("kit"));
         playerCmdsField.set(cm, playerCommands);
     }
 
@@ -85,11 +105,12 @@ public class ExtensionCmdManager {
         FileConfiguration conf = SkyWarsReloaded.getMessaging().getFile();
         a(conf, "helpList.sw.createnpc", "&a/sw createnpc &e[action] &e- &2Create a Skywars NPC using Citizens");
         a(conf, "helpList.sw.send", "&a/sw send &e[playername] [mapname] &e- &2Send a player to a game");
-        a(conf, "helpList.sw.select", "&a/sw select [cosmetictype] [cosmetic] &e- &2Select a specific cosmetic");
-        a(conf, "helpList.swmap.cage", "&a/swmap cage [mapname] [cagetype] &e- &2Set the default cage type of an arena");
-        a(conf, "helpList.swmap.import", "&a/swmap import [worldname] &e- &2Import an existing world as a skywars arena");
-        a(conf, "helpList.swmap.rename", "&a/swmap rename [mapname] [new name] &e- &2Rename an arena");
-
+        a(conf, "helpList.sw.select", "&a/sw select &e[cosmetictype] [cosmetic] &e- &2Select a specific cosmetic");
+        a(conf, "helpList.swmap.cage", "&a/swmap cage &e[mapname] [cagetype] &e- &2Set the default cage type of an arena");
+        a(conf, "helpList.swmap.import", "&a/swmap import &e[worldname] &e- &2Import an existing world as a skywars arena");
+        a(conf, "helpList.swmap.rename", "&a/swmap rename &e[mapname] [new name] &e- &2Rename an arena");
+        a(conf, "helpList.swkit.edit", "&a/swkit edit &e[kitname] - &2Edit a kit");
+        a(conf, "helpList.swkit.delete", "&a/swkit delete &e[kitname] - &2Permanently delete a kit");
         conf.save(file);
     }
 

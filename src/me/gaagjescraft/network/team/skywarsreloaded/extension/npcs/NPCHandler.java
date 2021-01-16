@@ -8,7 +8,7 @@ import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
@@ -83,7 +83,7 @@ public class NPCHandler implements Listener {
                     return;
                 }
                 cooldown.put(e.getPlayer(), true);
-                Bukkit.getScheduler().runTaskLater(Main.get(), () -> cooldown.remove(e.getPlayer()), 20);
+                Bukkit.getScheduler().runTaskLater(SWExtension.get(), () -> cooldown.remove(e.getPlayer()), 20);
 
                 int id = npc.getId();
                 NPCClickAction action = file.getClickAction(id);
@@ -96,10 +96,10 @@ public class NPCHandler implements Listener {
                     List<GameMap> maps = GameMap.getPlayableArenas(GameType.ALL);
 
                     if (maps.isEmpty()) {
-                        e.getPlayer().sendMessage(c(Main.get().getConfig().getString("no_solo_arenas")));
+                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("no_solo_arenas")));
                         return;
                     }
-                    e.getPlayer().sendMessage(c(Main.get().getConfig().getString("solo_join")));
+                    e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("solo_join")));
 
                     HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
                     List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
@@ -115,7 +115,7 @@ public class NPCHandler implements Listener {
                         b = map.addPlayers((TeamCard) null, e.getPlayer());
                     }
                     if (b) {
-                        e.getPlayer().sendMessage(c(Main.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
                     } else {
                         e.getPlayer().sendMessage(c((new Messaging.MessageFormatter()).format("error.could-not-join2")));
                     }
@@ -124,10 +124,10 @@ public class NPCHandler implements Listener {
                     List<GameMap> maps = GameMap.getPlayableArenas(GameType.TEAM);
 
                     if (maps.isEmpty()) {
-                        e.getPlayer().sendMessage(c(Main.get().getConfig().getString("no_team_arenas")));
+                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("no_team_arenas")));
                         return;
                     }
-                    e.getPlayer().sendMessage(c(Main.get().getConfig().getString("team_join")));
+                    e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("team_join")));
 
                     HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
                     List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
@@ -144,7 +144,7 @@ public class NPCHandler implements Listener {
                         b = map.addPlayers((TeamCard) null, e.getPlayer());
                     }
                     if (b) {
-                        e.getPlayer().sendMessage(c(Main.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
                     } else {
                         e.getPlayer().sendMessage(c((new Messaging.MessageFormatter()).format("error.could-not-join2")));
                     }
@@ -153,10 +153,10 @@ public class NPCHandler implements Listener {
                     List<GameMap> maps = GameMap.getPlayableArenas(GameType.SINGLE);
 
                     if (maps.isEmpty()) {
-                        e.getPlayer().sendMessage(c(Main.get().getConfig().getString("no_solo_arenas")));
+                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("no_solo_arenas")));
                         return;
                     }
-                    e.getPlayer().sendMessage(c(Main.get().getConfig().getString("solo_join")));
+                    e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("solo_join")));
 
                     HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
                     List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
@@ -173,7 +173,7 @@ public class NPCHandler implements Listener {
                         b = map.addPlayers((TeamCard) null, e.getPlayer());
                     }
                     if (b) {
-                        e.getPlayer().sendMessage(c(Main.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
                     } else {
                         e.getPlayer().sendMessage(c((new Messaging.MessageFormatter()).format("error.could-not-join2")));
                     }
@@ -225,7 +225,7 @@ public class NPCHandler implements Listener {
                     return;
                 }
                 cooldown.put(player, true);
-                Bukkit.getScheduler().runTaskLater(Main.get(), () -> cooldown.remove(player), 20);
+                Bukkit.getScheduler().runTaskLater(SWExtension.get(), () -> cooldown.remove(player), 20);
 
                 NPCFile file = new NPCFile();
                 if (file.getNPCs().contains(npc.getId())) {
@@ -242,10 +242,10 @@ public class NPCHandler implements Listener {
                         maps = GameMap.getPlayableArenas(GameType.ALL);
 
                         if (maps.isEmpty()) {
-                            player.sendMessage(c(Main.get().getConfig().getString("no_solo_arenas")));
+                            player.sendMessage(c(SWExtension.get().getConfig().getString("no_solo_arenas")));
                             return;
                         }
-                        player.sendMessage(c(Main.get().getConfig().getString("solo_join")));
+                        player.sendMessage(c(SWExtension.get().getConfig().getString("solo_join")));
 
                         GameMap map = null;
 
@@ -262,7 +262,7 @@ public class NPCHandler implements Listener {
                             b = map.addPlayers((TeamCard) null, player);
                         }
                         if (b) {
-                            player.sendMessage(c(Main.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                            player.sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
                         } else {
                             player.sendMessage(c((new Messaging.MessageFormatter()).format("error.could-not-join2")));
                         }
@@ -272,10 +272,10 @@ public class NPCHandler implements Listener {
                         maps = GameMap.getPlayableArenas(GameType.TEAM);
 
                         if (maps.isEmpty()) {
-                            player.sendMessage(c(Main.get().getConfig().getString("no_team_arenas")));
+                            player.sendMessage(c(SWExtension.get().getConfig().getString("no_team_arenas")));
                             return;
                         }
-                        player.sendMessage(c(Main.get().getConfig().getString("team_join")));
+                        player.sendMessage(c(SWExtension.get().getConfig().getString("team_join")));
 
                         GameMap map = null;
 
@@ -292,7 +292,7 @@ public class NPCHandler implements Listener {
                             b = map.addPlayers((TeamCard) null, player);
                         }
                         if (b) {
-                            player.sendMessage(c(Main.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                            player.sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
                         } else {
                             player.sendMessage(c((new Messaging.MessageFormatter()).format("error.could-not-join2")));
                         }
@@ -302,10 +302,10 @@ public class NPCHandler implements Listener {
                         maps = GameMap.getPlayableArenas(GameType.SINGLE);
 
                         if (maps.isEmpty()) {
-                            player.sendMessage(c(Main.get().getConfig().getString("no_solo_arenas")));
+                            player.sendMessage(c(SWExtension.get().getConfig().getString("no_solo_arenas")));
                             return;
                         }
-                        player.sendMessage(c(Main.get().getConfig().getString("solo_join")));
+                        player.sendMessage(c(SWExtension.get().getConfig().getString("solo_join")));
 
                         GameMap map = null;
 
@@ -322,7 +322,7 @@ public class NPCHandler implements Listener {
                             b = map.addPlayers((TeamCard) null, player);
                         }
                         if (b) {
-                            player.sendMessage(c(Main.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                            player.sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
                         } else {
                             player.sendMessage(c((new Messaging.MessageFormatter()).format("error.could-not-join2")));
                         }

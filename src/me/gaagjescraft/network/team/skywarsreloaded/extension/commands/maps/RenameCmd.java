@@ -4,7 +4,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -26,18 +26,18 @@ public class RenameCmd extends BaseCmd {
         String mapName = args[1];
         GameMap map = GameMap.getMap(mapName);
         if (map == null) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("invalid_arena")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_arena")));
             return true;
         }
         if (map.getMatchState() != MatchState.OFFLINE) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("game_must_be_offline")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("game_must_be_offline")));
             return true;
         }
 
         String newMapName = args[2];
         GameMap newMap = GameMap.getMap(newMapName);
         if (newMap != null) {
-            sender.sendMessage(Main.c(Main.get().getConfig().getString("arena_already_exists")));
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("arena_already_exists")));
             return true;
         }
 
@@ -54,7 +54,7 @@ public class RenameCmd extends BaseCmd {
         File folderFile = new File(SkyWarsReloaded.get().getDataFolder(), "maps" + File.separator + mapName);
         folderFile.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "maps" + File.separator + newMapName));
 
-        sender.sendMessage(Main.c(Main.get().getConfig().getString("renamed_arena").replace("%arena%", newMapName)));
+        sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("renamed_arena").replace("%arena%", newMapName)));
         return true;
     }
 }

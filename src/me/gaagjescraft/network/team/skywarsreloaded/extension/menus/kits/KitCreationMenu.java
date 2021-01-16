@@ -1,18 +1,20 @@
-package me.gaagjescraft.network.team.skywarsreloaded.extension.menus;
+package me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits;
 
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -21,30 +23,45 @@ import java.util.List;
 
 public class KitCreationMenu implements Listener {
 
-    private static List<Integer> glassSlots = Lists.newArrayList(0,1,2,3,4,5,6,7,8,
+    public static HashMap<Player, String> editing = new HashMap<>();
+    private static List<Integer> glassSlots = Lists.newArrayList(
+            0,1,2,3,4,5,6,7,8,
             10,12,17,
             19,21,26,
-            27,28,30,35,
-            37,39,44,
+            28,30,32,33,34,35,
+            37,39,40,41,42,44,
             45,46,47,48,49,50,51,52,53
             );
+    private static HashMap<Integer, Integer> hotbarSlots = new HashMap<>();
 
-    private static HashMap<Player, String> editing = new HashMap<>();
+    static {
+        hotbarSlots.put(13,0);
+        hotbarSlots.put(14,1);
+        hotbarSlots.put(15,2);
+        hotbarSlots.put(16,3);
+        hotbarSlots.put(22,4);
+        hotbarSlots.put(23,5);
+        hotbarSlots.put(24,6);
+        hotbarSlots.put(25,7);
+        hotbarSlots.put(31,8);
+    }
     private static HashMap<Player, ItemStack[]> editingArmor = new HashMap<>();
     private static HashMap<Player, ItemStack[]> editingContent = new HashMap<>();
 
     public void openMenu(Player player, GameKit kit) {
 
-        Inventory menu = Bukkit.createInventory(null, 54, "Skywars Kit Creator");
+        Inventory menu = Bukkit.createInventory(null, 54, "Skywars Kit Creator (" + kit.getFilename() + ")");
 
         ItemStack barrier = new ItemStack(Material.BARRIER);
         ItemMeta bMeta = barrier.getItemMeta();
         bMeta.setDisplayName(ChatColor.RED + "No item");
-        bMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "Click an armor item to automatically", ChatColor.GRAY + "set it to this slot"));
+        bMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "Click an armor item to automatically", ChatColor.GRAY + "set it to this slot", "",
+                ChatColor.GOLD + "Drag an item" + ChatColor.YELLOW +" to this slot to change it.",
+                ChatColor.GOLD + "Click" + ChatColor.YELLOW + " this item to remove it from the inventory."));
         barrier.setItemMeta(bMeta);
 
         ItemStack glass;
-        if (Main.get().isNewVersion()) {
+        if (SWExtension.get().isNewVersion()) {
             glass = new ItemStack(Material.valueOf("BLACK_STAINED_GLASS_PANE"));
         }
         else {
@@ -67,7 +84,7 @@ public class KitCreationMenu implements Listener {
         ItemStack[] armor = kit.getArmor();
         for (int i =0; i<= 3; i++) {
             int slot;
-            if (armor[i] != null) {
+            if (armor.length > i && armor[i] != null) {
                 if (i == 0) {
                     slot = 38;
                 }
@@ -85,26 +102,11 @@ public class KitCreationMenu implements Listener {
             }
         }
 
-        int slot = 13;
         ItemStack[] itemStacks = kit.getInventory();
-        for(int i=0;i<36;i++) {
-            if (itemStacks[i] != null) {
-                //if (!armorList.contains(item)) {
-                    menu.setItem(slot, itemStacks[i]);
-
-                    if (slot == 16) {
-                        slot = 22;
-                    } else if (slot == 25) {
-                        slot = 31;
-                    } else if (slot == 34) {
-                        slot = 40;
-                    } else {
-                        slot++;
-                        if (slot == 43) {
-                            break;
-                        }
-                    }
-               // }
+        for(int key : hotbarSlots.keySet()) {
+            int slot = hotbarSlots.get(key);
+            if (itemStacks[slot] != null) {
+                menu.setItem(key, itemStacks[slot]);
             }
 
         }
@@ -112,7 +114,8 @@ public class KitCreationMenu implements Listener {
         ItemStack icon = kit.getIcon();
         ItemMeta iMeta = icon.getItemMeta();
         iMeta.setDisplayName(ChatColor.GREEN + "Kit icon");
-        List<String> iconLore = Lists.newArrayList(ChatColor.GRAY + "This item will be displayed when", ChatColor.GRAY + "the player has permission to select it", "");
+        List<String> iconLore = Lists.newArrayList(ChatColor.GRAY + "This item will be displayed when", ChatColor.GRAY + "the player has permission to select it", "",
+                ChatColor.GOLD + "Drag an item" + ChatColor.YELLOW +" to this slot to change it.");
         iconLore.addAll(kit.getColorLores());
         iMeta.setLore(iconLore);
         icon.setItemMeta(iMeta);
@@ -120,48 +123,62 @@ public class KitCreationMenu implements Listener {
         ItemStack noIcon = kit.getLIcon();
         ItemMeta niMeta = noIcon.getItemMeta();
         niMeta.setDisplayName(ChatColor.RED + "No permission icon");
-        niMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "This item will be displayed when", ChatColor.GRAY + "the player does not have permission to select it", "", ChatColor.translateAlternateColorCodes('&', kit.getLockedLore())));
+        niMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "This item will be displayed when", ChatColor.GRAY + "the player does not have permission to select it", "",
+                ChatColor.GRAY + "Locked lore:", ChatColor.translateAlternateColorCodes('&', kit.getLockedLore()), "",
+                ChatColor.GOLD + "Drag an item" + ChatColor.YELLOW +" to this slot to change it."));
         noIcon.setItemMeta(niMeta);
 
         menu.setItem(9, icon);
         menu.setItem(18, noIcon);
 
+        ItemStack slotAmount = new ItemStack(Material.PAPER);
+        slotAmount.setAmount(kit.getPosition()+1);
+        ItemMeta sameta = slotAmount.getItemMeta();
+        sameta.setDisplayName(ChatColor.AQUA + "Current menu position: " + (kit.getPosition()+1));
+        sameta.setLore(Lists.newArrayList("", ChatColor.GOLD + "Left click" + ChatColor.YELLOW + " to increase the slot by +1",
+                ChatColor.GOLD + "Right click" + ChatColor.YELLOW + " to decrease the slot by -1"));
+        slotAmount.setItemMeta(sameta);
+        menu.setItem(27, slotAmount);
+
         ItemStack status;
         ItemMeta sMeta;
-        if (Main.get().isNewVersion()) {
-            if (kit.getEnabled()) {
+
+        if (kit.getEnabled()) {
+            if (SWExtension.get().isNewVersion())
                 status = new ItemStack(Material.valueOf("LIME_WOOL"));
-                sMeta = status.getItemMeta();
-                sMeta.setDisplayName(ChatColor.GREEN + "Kit is enabled");
-                sMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "Click to " + ChatColor.RED + "disable" + ChatColor.GRAY +" this kit"));
-                status.setItemMeta(sMeta);
-            }
-            else {
-                status = new ItemStack(Material.valueOf("RED_WOOL"));
-                sMeta = status.getItemMeta();
-                sMeta.setDisplayName(ChatColor.RED + "Kit is disabled");
-                sMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "Click to " + ChatColor.GREEN + "enable" + ChatColor.GRAY +" this kit"));
-                status.setItemMeta(sMeta);
-            }
+            else
+                status = new ItemStack(Material.valueOf("WOOL"), 1, (byte) 5);
+
+            sMeta = status.getItemMeta();
+            sMeta.setDisplayName(ChatColor.GREEN + "Kit is enabled");
+            sMeta.setLore(Lists.newArrayList("", ChatColor.GOLD + "Shift click " + ChatColor.YELLOW + "to " + ChatColor.RED + "disable" + ChatColor.YELLOW +" this kit"));
+            status.setItemMeta(sMeta);
         }
         else {
-            if (kit.getEnabled()) {
-                status = new ItemStack(Material.valueOf("WOOL"), 1, (byte) 5);
-                sMeta = status.getItemMeta();
-                sMeta.setDisplayName(ChatColor.GREEN + "Kit is enabled");
-                sMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "Click to " + ChatColor.RED + "disable" + ChatColor.GRAY +" this kit"));
-                status.setItemMeta(sMeta);
-            }
-            else {
+            if (SWExtension.get().isNewVersion())
+                status = new ItemStack(Material.valueOf("RED_WOOL"));
+            else
                 status = new ItemStack(Material.valueOf("WOOL"), 1, (byte)14);
-                sMeta = status.getItemMeta();
-                sMeta.setDisplayName(ChatColor.RED + "Kit is disabled");
-                sMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "Click to " + ChatColor.GREEN + "enable" + ChatColor.GRAY +" this kit"));
-                status.setItemMeta(sMeta);
-            }
-        }
 
+            sMeta = status.getItemMeta();
+            sMeta.setDisplayName(ChatColor.RED + "Kit is disabled");
+            sMeta.setLore(Lists.newArrayList("",ChatColor.GOLD + "Shift click " + ChatColor.YELLOW + "to " + ChatColor.GREEN + "enable" + ChatColor.YELLOW +" this kit"));
+            status.setItemMeta(sMeta);
+        }
         menu.setItem(36, status);
+
+        ItemStack invMan = new ItemStack(Material.BOOK);
+        ItemMeta imm = invMan.getItemMeta();
+        imm.setDisplayName(ChatColor.AQUA + "Extended Inventory Editor");
+        imm.setLore(Lists.newArrayList(ChatColor.GRAY + "Clicking this item will bring you to another",
+                ChatColor.GRAY + "menu in which you can change each item",
+                ChatColor.GRAY + "position in the menu, and also manage",
+                ChatColor.GRAY + "other slots than just the hotbar.", "",
+                ChatColor.GOLD + "Click " + ChatColor.YELLOW + "to open the extended inventory editor."));
+        imm.addEnchant(Enchantment.DURABILITY,1,true);
+        imm.addItemFlags(ItemFlag.values());
+        invMan.setItemMeta(imm);
+        menu.setItem(43, invMan);
 
         player.openInventory(menu);
         editing.put(player, kit.getName());
@@ -169,10 +186,10 @@ public class KitCreationMenu implements Listener {
         editingContent.put(player, itemStacks);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
-        if (e.getClickedInventory() == null || !e.getView().getTitle().equals("Skywars Kit Creator") || !editing.containsKey(player)) {
+        if (e.getClickedInventory() == null || !e.getView().getTitle().startsWith("Skywars Kit Creator") || !editing.containsKey(player) || ExtendedKitCreationMenu.viewingExtended.contains(player)) {
             return;
         }
 
@@ -208,6 +225,7 @@ public class KitCreationMenu implements Listener {
                 }
             }
             else if (slot == 18) {
+                // player clicks no permission icon slot
                 if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
                     ItemStack cursor = e.getCursor();
 
@@ -223,13 +241,26 @@ public class KitCreationMenu implements Listener {
                     openMenu(player, kit);
                 }
             }
-            else if (slot == 36) {
+            else if (slot == 27) {
+                // player clicks inventory slot position item slot
+                int pos = kit.getPosition();
+                if (e.isLeftClick() && pos < 53) {
+                    kit.setPosition(pos+1);
+                    openMenu(player, kit);
+                }
+                else if (e.isRightClick() && pos > 0) {
+                    kit.setPosition(pos-1);
+                    openMenu(player, kit);
+                }
+            }
+            else if (slot == 36 && e.isShiftClick()) {
+                // player clicks toggle kit toggle item slot
                 kit.setEnabled(!kit.getEnabled());
                 openMenu(player, kit);
             }
 
             else if (slot == 11 || slot == 20 || slot == 29 || slot == 38) {
-
+                // player clicks change armor item slot
                 if (e.getCursor() == null || e.getCursor().getType() == Material.AIR) {
                     if (clicked.getType() == Material.BARRIER) { return; }
 
@@ -274,36 +305,43 @@ public class KitCreationMenu implements Listener {
                     }
                 }
             }
+            else if (slot == 43) {
+                SWExtension.getExtendedKitMenu().openMenu(player, kit);
+                return;
+            }
             else {
-                // player is clicking normal contents
-                if (e.getCursor() == null || e.getCursor().getType() == Material.AIR) {
-                    if (clicked != null && !glassSlots.contains(slot)) {
-                        for (int i = 0; i < 36; i++) {
-                            if (content[i] != null && content[i].equals(clicked)) {
-                                content[i] = null;
-                                player.getInventory().addItem(clicked);
-                                kit.setInventory(content);
-                                break;
-                            }
+                // player clicks quick hotbar editor
+                if (e.getCursor() == null || e.getCursor().getType() == Material.AIR) { // player is not dragging an item
+                    if (clicked != null && !glassSlots.contains(slot)) { // player is not clicking glass slot
+                        int index = hotbarSlots.get(slot);
+                        if (content[index] != null) {
+                            content[index] = null;
+                            player.getInventory().addItem(clicked);
+                            kit.setInventory(content);
                         }
                         openMenu(player, kit);
                     }
                 }
                 else {
-                    ItemStack cursor = e.getCursor();
-                    for (int i = 0; i < 36; i++) {
-                        if (content[i] == null) {
-                            content[i] = cursor;
+                    if (!glassSlots.contains(slot)) {
+                        int index = hotbarSlots.get(slot);
+                        ItemStack cursor = e.getCursor();
+                        if (content[index] == null) {
+                            content[index] = cursor;
                             kit.setInventory(content);
-                            e.setCursor(null);
-                            break;
+                        } else {
+                            content[index] = cursor;
+                            player.getInventory().addItem(clicked);
+                            kit.setInventory(content);
                         }
+                        e.setCursor(null);
+                        openMenu(player, kit);
                     }
-                    openMenu(player, kit);
                 }
             }
         }
         else {
+            // player clicks its own inventory
             if (clicked != null) {
                 if (e.getClick().isShiftClick()) {
                     String mat = clicked.getType().name();
@@ -338,6 +376,9 @@ public class KitCreationMenu implements Listener {
                     } else {
                         for (int i = 0; i < 36; i++) {
                             if (content[i] == null) {
+                                if (i > 8) {
+                                    player.sendMessage(ChatColor.GRAY + "The first empty slot was " + i + " and therefore placed outside the hotbar. Open the Extended Inventory Editor to view the item.");
+                                }
                                 content[i] = clicked;
                                 player.getInventory().setItem(slot, null);
                                 kit.setInventory(content);
@@ -360,26 +401,9 @@ public class KitCreationMenu implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         Player player = (Player) e.getPlayer();
-        if (editing.containsKey(player)) {
+        if (editing.containsKey(player) && !ExtendedKitCreationMenu.viewingExtended.contains(player)) {
             GameKit.saveKit(GameKit.getKit(editing.get(player)));
             editing.remove(player);
-            player.sendMessage(ChatColor.GRAY + "Saving the kit...");
-        }
-    }
-
-    @EventHandler
-    public void onChat(AsyncPlayerChatEvent e) {
-        if (e.getMessage().startsWith("openkitmenu ")) {
-            String kit = e.getMessage().replace("openkitmenu ", "");
-            GameKit kitt = GameKit.getKit(kit);
-            if (kitt != null) {
-                openMenu(e.getPlayer(), kitt);
-            }
-            else {
-                GameKit.newKit(e.getPlayer(),kit);
-                openMenu(e.getPlayer(), GameKit.getKit(kit));
-                e.getPlayer().getInventory().clear();
-            }
         }
     }
 

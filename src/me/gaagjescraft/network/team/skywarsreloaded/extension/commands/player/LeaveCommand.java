@@ -2,7 +2,7 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player;
 
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,18 +26,18 @@ public class LeaveCommand implements CommandExecutor {
             Player p = (Player)commandSender;
 
             if (!p.hasPermission("sw.quit")) {
-                p.sendMessage(c(Main.get().getConfig().getString("no_permission")));
+                p.sendMessage(c(SWExtension.get().getConfig().getString("no_permission")));
                 return true;
             }
 
             GameMap a = MatchManager.get().getPlayerMap(p);
             if (a == null) {
-                p.sendMessage(c(Main.get().getConfig().getString("not_ingame")));
+                p.sendMessage(c(SWExtension.get().getConfig().getString("not_ingame")));
                 return true;
             }
 
             MatchManager.get().playerLeave(p, EntityDamageEvent.DamageCause.CUSTOM,true,false,true);
-            p.sendMessage(c(Main.get().getConfig().getString("left_game")));
+            p.sendMessage(c(SWExtension.get().getConfig().getString("left_game")));
             return true;
         }
         
