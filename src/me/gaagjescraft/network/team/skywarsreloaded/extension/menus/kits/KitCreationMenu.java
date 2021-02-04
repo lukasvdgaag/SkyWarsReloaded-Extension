@@ -24,7 +24,7 @@ import java.util.List;
 public class KitCreationMenu implements Listener {
 
     public static HashMap<Player, String> editing = new HashMap<>();
-    private static List<Integer> glassSlots = Lists.newArrayList(
+    private static final List<Integer> glassSlots = Lists.newArrayList(
             0,1,2,3,4,5,6,7,8,
             10,12,17,
             19,21,26,
@@ -32,7 +32,7 @@ public class KitCreationMenu implements Listener {
             37,39,40,41,42,44,
             45,46,47,48,49,50,51,52,53
             );
-    private static HashMap<Integer, Integer> hotbarSlots = new HashMap<>();
+    private static final HashMap<Integer, Integer> hotbarSlots = new HashMap<>();
 
     static {
         hotbarSlots.put(13,0);
@@ -108,15 +108,16 @@ public class KitCreationMenu implements Listener {
             if (itemStacks[slot] != null) {
                 menu.setItem(key, itemStacks[slot]);
             }
-
         }
 
         ItemStack icon = kit.getIcon();
         ItemMeta iMeta = icon.getItemMeta();
         iMeta.setDisplayName(ChatColor.GREEN + "Kit icon");
         List<String> iconLore = Lists.newArrayList(ChatColor.GRAY + "This item will be displayed when", ChatColor.GRAY + "the player has permission to select it", "",
-                ChatColor.GOLD + "Drag an item" + ChatColor.YELLOW +" to this slot to change it.");
+                ChatColor.AQUA + "Lore:");
         iconLore.addAll(kit.getColorLores());
+        iconLore.add("");
+        iconLore.add(ChatColor.GOLD + "Drag an item" + ChatColor.YELLOW +" to this slot to change it.");
         iMeta.setLore(iconLore);
         icon.setItemMeta(iMeta);
 
@@ -131,11 +132,13 @@ public class KitCreationMenu implements Listener {
         menu.setItem(9, icon);
         menu.setItem(18, noIcon);
 
-        ItemStack slotAmount = new ItemStack(Material.PAPER);
-        slotAmount.setAmount(kit.getPosition()+1);
+        ItemStack slotAmount = new ItemStack(Material.WORKBENCH);
         ItemMeta sameta = slotAmount.getItemMeta();
-        sameta.setDisplayName(ChatColor.AQUA + "Current menu position: " + (kit.getPosition()+1));
-        sameta.setLore(Lists.newArrayList("", ChatColor.GOLD + "Left click" + ChatColor.YELLOW + " to increase the slot by +1",
+        sameta.setDisplayName(ChatColor.AQUA + "Other Kit Settings");
+        sameta.setLore(Lists.newArrayList("",
+                ChatColor.GRAY + "Change other kit settings such as the lore,",
+                ChatColor.GRAY + "the menu position, display name, and permission node.", "",
+                ChatColor.GOLD + "Left click" + ChatColor.YELLOW + " to increase the slot by +1",
                 ChatColor.GOLD + "Right click" + ChatColor.YELLOW + " to decrease the slot by -1"));
         slotAmount.setItemMeta(sameta);
         menu.setItem(27, slotAmount);
@@ -189,7 +192,7 @@ public class KitCreationMenu implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
-        if (e.getClickedInventory() == null || !e.getView().getTitle().startsWith("Skywars Kit Creator") || !editing.containsKey(player) || ExtendedKitCreationMenu.viewingExtended.contains(player)) {
+        if (e.getClickedInventory() == null || !e.getView().getTitle().startsWith("Skywars Kit Creator") || !editing.containsKey(player) || ExtendedKitCreationMenu.viewingExtended.contains(player) || KitSettingsMenu.viewingSettings.contains(player)) {
             return;
         }
 
@@ -211,14 +214,6 @@ public class KitCreationMenu implements Listener {
                 // player clicks the icon slot
                 if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
                     ItemStack cursor = e.getCursor();
-
-                    ItemStack icon = kit.getIcon();
-                    ItemMeta iMeta = icon.getItemMeta();
-                    iMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', kit.getColorName()));
-                    iMeta.setLore(kit.getColorLores());
-                    icon.setItemMeta(iMeta);
-
-                    player.getInventory().addItem(icon);
                     kit.setIcon(cursor);
                     e.setCursor(null);
                     openMenu(player, kit);
@@ -228,30 +223,13 @@ public class KitCreationMenu implements Listener {
                 // player clicks no permission icon slot
                 if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
                     ItemStack cursor = e.getCursor();
-
-                    ItemStack icon = kit.getLIcon();
-                    ItemMeta iMeta = icon.getItemMeta();
-                    iMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', kit.getColorName()));
-                    iMeta.setLore(Lists.newArrayList(ChatColor.translateAlternateColorCodes('&', kit.getColoredLockedLore())));
-                    icon.setItemMeta(iMeta);
-
-                    player.getInventory().addItem(icon);
                     kit.setLIcon(cursor);
                     e.setCursor(null);
                     openMenu(player, kit);
                 }
             }
             else if (slot == 27) {
-                // player clicks inventory slot position item slot
-                int pos = kit.getPosition();
-                if (e.isLeftClick() && pos < 53) {
-                    kit.setPosition(pos+1);
-                    openMenu(player, kit);
-                }
-                else if (e.isRightClick() && pos > 0) {
-                    kit.setPosition(pos-1);
-                    openMenu(player, kit);
-                }
+                SWExtension.getKitSettingsMenu().openMenu(player, kit);
             }
             else if (slot == 36 && e.isShiftClick()) {
                 // player clicks toggle kit toggle item slot
@@ -401,7 +379,7 @@ public class KitCreationMenu implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         Player player = (Player) e.getPlayer();
-        if (editing.containsKey(player) && !ExtendedKitCreationMenu.viewingExtended.contains(player)) {
+        if (editing.containsKey(player) && !ExtendedKitCreationMenu.viewingExtended.contains(player) && !KitSettingsMenu.viewingSettings.contains(player)) {
             GameKit.saveKit(GameKit.getKit(editing.get(player)));
             editing.remove(player);
         }

@@ -3,7 +3,6 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.files;
 import com.walrusone.skywarsreloaded.enums.Vote;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.features.AutoRejoinType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,13 +10,11 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashMap;
 
 public class PlayerFile implements FileManager {
 
     private static HashMap<Player, Long> autoJoinTimes = new HashMap<>();
-    private static HashMap<Player, AutoRejoinType> autoJoinTypes= new HashMap<>();
     private static FileConfiguration fc = null;
     private String fname = "players.yml";
     private File f = new File(SWExtension.get().getDataFolder(), fname);
@@ -137,37 +134,6 @@ public class PlayerFile implements FileManager {
         getFile().set(player.getUniqueId().toString()+".kit",kit.getName());
         save();
         reload();
-    }
-
-    public void enableAutoJoinMode(AutoRejoinType arg0) {
-        // this will enable auto-join mode from the current time and will last for x time (configurable in the config)
-        // this will also override the set time if it has already been enabled.
-
-        long time = Calendar.getInstance().getTimeInMillis();
-        autoJoinTimes.put(player,time);
-        autoJoinTypes.put(player, arg0);
-    }
-
-    public void disableAutoJoinMode() {
-        autoJoinTimes.remove(player);
-        autoJoinTypes.remove(player);
-    }
-
-    public boolean canAutoJoin() {
-        if (autoJoinTimes.containsKey(player) && autoJoinTimes.containsKey(player)) {
-            long lastingTime = SWExtension.get().getConfig().getInt("autojoin_lasting_time",30) * 60000;
-            long startTime = autoJoinTimes.get(player);
-            long endTime = startTime+lastingTime;
-            long currentTime = Calendar.getInstance().getTimeInMillis();
-
-            return endTime >= currentTime;
-        }
-
-        return false;
-    }
-
-    public AutoRejoinType getAutoJoinType() {
-        return autoJoinTypes.getOrDefault(player, null);
     }
 
 }

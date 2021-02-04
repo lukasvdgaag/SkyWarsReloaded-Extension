@@ -180,7 +180,7 @@ public class SingleJoinMenu implements Listener {
                     }
                 }
 
-                double xy = ((double) (ingamePlayers / maxplayers));
+                double xy = ((double) (ingamePlayers / (maxplayers == 0 ? 1 : maxplayers)));
 
                 ItemStack gameIcon = SkyWarsReloaded.getNMS().getItemStack(SkyWarsReloaded.getIM().getItem("blockwaiting"), lore, new Messaging.MessageFormatter()
                         .setVariable("arena", arena)

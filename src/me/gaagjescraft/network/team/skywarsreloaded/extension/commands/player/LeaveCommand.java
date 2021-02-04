@@ -36,7 +36,13 @@ public class LeaveCommand implements CommandExecutor {
                 return true;
             }
 
-            MatchManager.get().playerLeave(p, EntityDamageEvent.DamageCause.CUSTOM,true,false,true);
+            if (a.getTeamCard(p) == null && a.getSpectators().contains(p.getUniqueId())) {
+                a.getSpectators().remove(p.getUniqueId());
+                MatchManager.get().removeSpectator(p);
+            }
+            else {
+                MatchManager.get().playerLeave(p, EntityDamageEvent.DamageCause.CUSTOM, true, false, true);
+            }
             p.sendMessage(c(SWExtension.get().getConfig().getString("left_game")));
             return true;
         }

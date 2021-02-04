@@ -6,11 +6,14 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.admin.Rel
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player.LeaveCommand;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.events.AdditionsPlusHandler;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.events.SWEvents;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.features.AutoRejoinHandler;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.FileManager;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.PlayerFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.ExtendedKitCreationMenu;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitCreationMenu;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitListMenu;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitSettingsMenu;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler;
 import org.bukkit.Bukkit;
@@ -27,6 +30,8 @@ public class SWExtension extends JavaPlugin implements Listener {
     private static SWExtension m;
     private KitCreationMenu kitMenu;
     private ExtendedKitCreationMenu extendedKitCreationMenu;
+    private KitListMenu kitListMenu;
+    private KitSettingsMenu kitSettingsMenu;
 
     public static SWExtension get() {
         return m;
@@ -35,6 +40,13 @@ public class SWExtension extends JavaPlugin implements Listener {
     public static KitCreationMenu getKitMenu() {
         return m.kitMenu;
     }
+
+    public static KitListMenu getKitListMenu() {
+        return m.kitListMenu;
+    }
+
+    public static KitSettingsMenu getKitSettingsMenu() { return m.kitSettingsMenu; }
+
     public static ExtendedKitCreationMenu getExtendedKitMenu() { return m.extendedKitCreationMenu; }
 
     public static String c(String a) {
@@ -144,8 +156,15 @@ public class SWExtension extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new SingleJoinMenu(), this);
         Bukkit.getPluginManager().registerEvents(new KitCreationMenu(), this);
         Bukkit.getPluginManager().registerEvents(new ExtendedKitCreationMenu(), this);
+        Bukkit.getPluginManager().registerEvents(new KitListMenu(), this);
+        Bukkit.getPluginManager().registerEvents(new KitSettingsMenu(), this);
+
+        Bukkit.getPluginManager().registerEvents(new AutoRejoinHandler(), this); // todo beta
+
         kitMenu = new KitCreationMenu();
         extendedKitCreationMenu = new ExtendedKitCreationMenu();
+        kitListMenu = new KitListMenu();
+        kitSettingsMenu = new KitSettingsMenu();
     }
 
     public boolean isNewVersion() {

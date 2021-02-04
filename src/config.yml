@@ -9,7 +9,7 @@ join_random_arena: '&7Joining a random arena...'
 no_solo_arenas: '&cWe couldn''t find any free solo arenas'
 no_team_arenas: '&cWe couldn''t find any free team arenas'
 no_arenas_found: '&cWe couldn''t find any free arenas'
-not_ingame: '&cYou must be in a game to leave one'
+not_ingame: '&cYou must be in a game to do this'
 left_game: '&cYou left your game'
 
 must_specify_world: '&cYou must specify a world to import. Make sure this isn''t an arena already'
@@ -55,7 +55,7 @@ too_few_rename_arguments: '&cYou gave too few arguments. Use /swm rename [map] [
 
 cagetype_set: '&aYou successfully set the cage type of arena %map% to %type%'
 invalid_cagetype: '&cThere is no cage type with that name. Select one from below:'
-
+kit_preview_give: '&aThe preview of kit &b%kit%&a has been added to your inventory.'
 
 no_arena_specified_action: OPEN_JOIN_MENU
 override_item_join_actions: true

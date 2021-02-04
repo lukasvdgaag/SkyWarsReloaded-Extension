@@ -5,11 +5,13 @@ import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.commands.KitCmdManager;
 import com.walrusone.skywarsreloaded.commands.MainCmdManager;
 import com.walrusone.skywarsreloaded.commands.MapCmdManager;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.admin.CreateNPCCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.admin.SendCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.kits.CreateKit;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.kits.DeleteKit;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.kits.EditKit;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.kits.ListKit;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.CageTypeCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.ImportCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.NameCmd;
@@ -36,6 +38,7 @@ public class ExtensionCmdManager {
 
             Bukkit.getPluginCommand("skywars").setTabCompleter(new ExtensionCmdTabCompletion());
             Bukkit.getPluginCommand("swmap").setTabCompleter(new ExtensionCmdTabCompletion());
+            SWExtension.get().getCommand("autojoin").setExecutor(new AutoJoinCmdManager());
         } catch (Exception ignored) {
         }
     }
@@ -80,6 +83,8 @@ public class ExtensionCmdManager {
         playerCommands.add(new CreateKit("kit"));
         playerCommands.removeIf(cmd -> cmd.cmdName.equalsIgnoreCase("delete"));
         playerCommands.add(new DeleteKit("kit"));
+        playerCommands.removeIf(cmd -> cmd.cmdName.equalsIgnoreCase("list"));
+        playerCommands.add(new ListKit("kit"));
         playerCmdsField.set(cm, playerCommands);
     }
 
@@ -111,6 +116,10 @@ public class ExtensionCmdManager {
         a(conf, "helpList.swmap.rename", "&a/swmap rename &e[mapname] [new name] &e- &2Rename an arena");
         a(conf, "helpList.swkit.edit", "&a/swkit edit &e[kitname] - &2Edit a kit");
         a(conf, "helpList.swkit.delete", "&a/swkit delete &e[kitname] - &2Permanently delete a kit");
+
+        a(conf, "helpList.autojoin.now", "&a/autojoin now &e- &2Forcefully join a new game.");
+        a(conf, "helpList.autojoin.auto", "&a/autojoin auto &e- &2Automatically join a new game for 1 hour long.");
+        a(conf, "helpList.autojoin.cancel", "&a/autojoin cancel &e- &2Cancel automatically joining a new game.");
         conf.save(file);
     }
 

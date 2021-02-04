@@ -7,10 +7,15 @@ softdepend:
   - Additions
 author: GaagjesCraft Network Team (GCNT)
 website: https://gaagjescraft.net/skywars/
-version: 1.7.0_SNAPSHOT-1
+version: 1.7.0
 main: me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension
 
 commands:
   leave:
     description: Leave command
     usage: /leave
+  autojoin:
+    description: Automatically rejoin a game when one ends
+    usage: /<command> [now/auto/cancel]
+    aliases:
+      - playagain

@@ -30,7 +30,7 @@ public class SendCmd extends BaseCmd {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_arena")));
             return true;
         }
-        if (MatchManager.get().getGame(p) != null) {
+        if (MatchManager.get().getPlayerMap(p) != null) {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("already_ingame_other").replace("%player%", p.getName())));
             return true;
         }

@@ -23,13 +23,13 @@ import java.util.List;
 
 public class ExtendedKitCreationMenu implements Listener {
 
-    public static List<Player> viewingExtended = Lists.newArrayList();
-    private static List<Integer> glassSlots = Lists.newArrayList(
-            27,28,29,30,31,32,33,34,35,
-            45,46,47,48,50,51,52,53
+    private static final List<Integer> glassSlots = Lists.newArrayList(
+            27, 28, 29, 30, 31, 32, 33, 34, 35,
+            45, 46, 47, 48, 50, 51, 52, 53
     );
+    private static final HashMap<Integer, Integer> hotbarSlots = new HashMap<>();
+    public static List<Player> viewingExtended = Lists.newArrayList();
 
-    private static HashMap<Integer, Integer> hotbarSlots = new HashMap<>();
     static {
         hotbarSlots.put(46, 0);
         hotbarSlots.put(47, 1);
@@ -49,9 +49,8 @@ public class ExtendedKitCreationMenu implements Listener {
         ItemStack glass;
         if (SWExtension.get().isNewVersion()) {
             glass = new ItemStack(Material.valueOf("BLACK_STAINED_GLASS_PANE"));
-        }
-        else {
-            glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1,(byte)15);
+        } else {
+            glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (byte) 15);
         }
         ItemMeta gMeta = glass.getItemMeta();
         gMeta.setDisplayName(ChatColor.RESET + "");
@@ -59,15 +58,15 @@ public class ExtendedKitCreationMenu implements Listener {
         glass.setItemMeta(gMeta);
 
         for (int i : glassSlots) {
-            menu.setItem(i,glass);
+            menu.setItem(i, glass);
         }
 
         ItemStack[] content = kit.getInventory();
-        for (int i=9;i<36;i++) { // setting normal inventory items
-            menu.setItem(i-9,content[i]);
+        for (int i = 9; i < 36; i++) { // setting normal inventory items
+            menu.setItem(i - 9, content[i]);
         }
-        for (int i=0;i<8;i++) { // setting hotbar items
-            menu.setItem(36+i, content[i]);
+        for (int i = 0; i < 8; i++) { // setting hotbar items
+            menu.setItem(36 + i, content[i]);
         }
 
 
@@ -76,9 +75,9 @@ public class ExtendedKitCreationMenu implements Listener {
         imm.setDisplayName(ChatColor.AQUA + "Return to normal editor");
         imm.setLore(Lists.newArrayList(ChatColor.GRAY + "Clicking this item will return you to the",
                 ChatColor.GRAY + "normal kit editor menu where you can",
-                ChatColor.GRAY + "set the slot, icons and armor.","",
+                ChatColor.GRAY + "set the slot, icons and armor.", "",
                 ChatColor.GOLD + "Click " + ChatColor.YELLOW + "to return to the normal editor."));
-        imm.addEnchant(Enchantment.DURABILITY,1,true);
+        imm.addEnchant(Enchantment.DURABILITY, 1, true);
         imm.addItemFlags(ItemFlag.values());
         invMan.setItemMeta(imm);
         menu.setItem(49, invMan);
@@ -91,7 +90,7 @@ public class ExtendedKitCreationMenu implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
-        if (e.getClickedInventory() == null || !e.getView().getTitle().startsWith("Skywars Kit Creator") || !KitCreationMenu.editing.containsKey(player) || !viewingExtended.contains(player)) {
+        if (e.getClickedInventory() == null || !e.getView().getTitle().startsWith("Skywars Kit Creator") || !KitCreationMenu.editing.containsKey(player) || !viewingExtended.contains(player) || KitSettingsMenu.viewingSettings.contains(player)) {
             return;
         }
 
@@ -110,23 +109,20 @@ public class ExtendedKitCreationMenu implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onClose(InventoryCloseEvent e) {
         Player player = (Player) e.getPlayer();
-        if (KitCreationMenu.editing.containsKey(player) && viewingExtended.contains(player)) {
+        if (KitCreationMenu.editing.containsKey(player) && viewingExtended.contains(player) && !KitSettingsMenu.viewingSettings.contains(player)) {
             GameKit kit = GameKit.getKit(KitCreationMenu.editing.get(player));
 
             ItemStack[] items = new ItemStack[54];
-            for (int i=0;i<26;i++) {
-                items[i+9] = e.getView().getTopInventory().getItem(i);
+            for (int i = 0; i < 26; i++) {
+                items[i + 9] = e.getView().getTopInventory().getItem(i);
             }
-            for (int i=36;i<45;i++) {
-                items[i-36] = e.getView().getTopInventory().getItem(i);
+            for (int i = 36; i < 45; i++) {
+                items[i - 36] = e.getView().getTopInventory().getItem(i);
             }
             kit.setInventory(items);
 
             GameKit.saveKit(kit);
             viewingExtended.remove(player);
-            //Bukkit.getScheduler().runTaskLater(SWExtension.get(), ()-> {
-                //SWExtension.getKitMenu().openMenu(player, kit);
-            //}, 1);
         }
     }
 

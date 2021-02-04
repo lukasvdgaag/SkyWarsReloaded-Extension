@@ -139,13 +139,8 @@ public class JoinCmd extends BaseCmd {
                     }
                     else {
                         GameMap map = GameMap.getMap(arena);
-                        // here i'm creating a new game variable
-                        // here i'm checking if the game is valid
                         if (map != null) {
-                            // here i'm checking if I can add a player to the game
-                            // so if the game is playable (not ingame) and if it's not full
                             if ((map.getMatchState() == MatchState.WAITINGSTART || map.getMatchState() == MatchState.WAITINGLOBBY) && map.canAddPlayer()) {
-                                // here i'm actually adding the player to the map. So like joining it
                                 boolean b = map.addPlayers((TeamCard) null, player);
                                 if (b) {
                                     player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", arena)));
@@ -168,7 +163,7 @@ public class JoinCmd extends BaseCmd {
         return true;
     }
 
-    private void joinGame(Player player, GameType type) {
+    public static void joinGame(Player player, GameType type) {
         List<GameMap> maps = GameMap.getPlayableArenas(type);
         if (maps.isEmpty()) {
             if (type == GameType.SINGLE) {
