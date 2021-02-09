@@ -8,7 +8,6 @@ import com.walrusone.skywarsreloaded.utilities.Party;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.BaseCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.features.AutoRejoin;
-import org.bukkit.ChatColor;
 
 public class AutoJoinNowCmd extends BaseCmd {
 
@@ -26,50 +25,33 @@ public class AutoJoinNowCmd extends BaseCmd {
         if (map == null) {
             player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("not_ingame")));
             return true;
-        }
-        else if (!map.getSpectators().contains(player.getUniqueId()) && map.getMatchState() != MatchState.ENDING) {
-            player.sendMessage(ChatColor.RED + "You can't use auto join right now. Try again later.");
+        } else if (!map.getSpectators().contains(player.getUniqueId()) && map.getMatchState() != MatchState.ENDING) {
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.cannot_use_now")));
             return true;
         }
 
         AutoRejoin autoRejoin = AutoRejoin.fromPlayer(player);
-        int result = -1;
         if (autoRejoin == null) {
             Party party = Party.getParty(player);
             if (party != null && !party.getLeader().equals(player.getUniqueId())) {
-                player.sendMessage(ChatColor.RED + "You must be the party leader to do this.");
+                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.must_be_leader")));
                 return true;
             }
             autoRejoin = new AutoRejoin(player, party, (map.getTeamSize() == 1 ? GameType.SINGLE : GameType.TEAM));
-            result = autoRejoin.attemptJoin(true);
+            autoRejoin.attemptJoin(true);
 
             AutoRejoin.autoRejoins.remove(autoRejoin);
-        }
-        else {
+        } else {
             if (!autoRejoin.isOwner(player)) {
-                player.sendMessage(ChatColor.RED + "You must be the party leader to do this.");
+                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.must_be_leader")));
                 return true;
             }
             Party party = Party.getParty(player);
             autoRejoin.setParty(party);
             autoRejoin.setType(map.getTeamSize() == 1 ? GameType.SINGLE : GameType.TEAM);
-            result = autoRejoin.attemptJoin(true);
+            autoRejoin.attemptJoin(true);
 
             AutoRejoin.autoRejoins.remove(autoRejoin);
-        }
-
-        if (result == -1) {
-            player.sendMessage(ChatColor.RED + "Something went wrong with finding you a new game.");
-        }
-        else if (result == 0) {
-            if (autoRejoin.getParty() == null) player.sendMessage(ChatColor.RED + "We couldn't find an arena to fit you in.");
-            else player.sendMessage(ChatColor.RED + "We couldn't find an arena to fit you and your party members in.");
-        }
-        else if (result == 1) {
-            player.sendMessage(ChatColor.RED + "Waiting for your party members to finish their game before rejoining another one.");
-        }
-        else if (result == 2) {
-            player.sendMessage(ChatColor.GREEN + "Successfully found a new game to join!");
         }
         return true;
     }

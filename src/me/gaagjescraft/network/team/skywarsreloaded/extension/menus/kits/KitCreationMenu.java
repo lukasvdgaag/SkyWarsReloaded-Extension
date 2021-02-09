@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -189,7 +190,16 @@ public class KitCreationMenu implements Listener {
         editingContent.put(player, itemStacks);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
+    public void onDrag(InventoryDragEvent e) {
+        Player player = (Player) e.getWhoClicked();
+        if (e.getInventory() == null || !e.getView().getTitle().startsWith("Skywars Kit Creator") || !editing.containsKey(player) || ExtendedKitCreationMenu.viewingExtended.contains(player) || KitSettingsMenu.viewingSettings.contains(player)) {
+            return;
+        }
+        e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
         if (e.getClickedInventory() == null || !e.getView().getTitle().startsWith("Skywars Kit Creator") || !editing.containsKey(player) || ExtendedKitCreationMenu.viewingExtended.contains(player) || KitSettingsMenu.viewingSettings.contains(player)) {
@@ -207,8 +217,7 @@ public class KitCreationMenu implements Listener {
         ItemStack[] armor = kit.getArmor();
         ItemStack[] content = kit.getInventory();
 
-        if (inventory == e.getView().getTopInventory()) {
-
+        if (e.getView().getTopInventory().equals(inventory)) {
 
             if (slot == 9) {
                 // player clicks the icon slot
@@ -216,6 +225,7 @@ public class KitCreationMenu implements Listener {
                     ItemStack cursor = e.getCursor();
                     kit.setIcon(cursor);
                     e.setCursor(null);
+                    GameKit.saveKit(kit);
                     openMenu(player, kit);
                 }
             }
@@ -225,15 +235,18 @@ public class KitCreationMenu implements Listener {
                     ItemStack cursor = e.getCursor();
                     kit.setLIcon(cursor);
                     e.setCursor(null);
+                    GameKit.saveKit(kit);
                     openMenu(player, kit);
                 }
             }
             else if (slot == 27) {
+                GameKit.saveKit(kit);
                 SWExtension.getKitSettingsMenu().openMenu(player, kit);
             }
             else if (slot == 36 && e.isShiftClick()) {
                 // player clicks toggle kit toggle item slot
                 kit.setEnabled(!kit.getEnabled());
+                GameKit.saveKit(kit);
                 openMenu(player, kit);
             }
 
@@ -257,6 +270,7 @@ public class KitCreationMenu implements Listener {
                             break;
                         }
                     }
+                    GameKit.saveKit(kit);
                     openMenu(player, kit);
                 }
                 else {
@@ -279,13 +293,14 @@ public class KitCreationMenu implements Listener {
                         armor[i] = cursor;
                         kit.setArmor(armor);
                         e.setCursor(null);
+                        GameKit.saveKit(kit);
                         openMenu(player, kit);
                     }
                 }
             }
             else if (slot == 43) {
+                GameKit.saveKit(kit);
                 SWExtension.getExtendedKitMenu().openMenu(player, kit);
-                return;
             }
             else {
                 // player clicks quick hotbar editor
@@ -297,6 +312,7 @@ public class KitCreationMenu implements Listener {
                             player.getInventory().addItem(clicked);
                             kit.setInventory(content);
                         }
+                        GameKit.saveKit(kit);
                         openMenu(player, kit);
                     }
                 }
@@ -313,6 +329,7 @@ public class KitCreationMenu implements Listener {
                             kit.setInventory(content);
                         }
                         e.setCursor(null);
+                        GameKit.saveKit(kit);
                         openMenu(player, kit);
                     }
                 }
@@ -364,6 +381,7 @@ public class KitCreationMenu implements Listener {
                             }
                         }
                     }
+                    GameKit.saveKit(kit);
                     openMenu(player, kit);
                 }
                 else {

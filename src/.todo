@@ -1,3 +1,8 @@
+# 1.7.1
+Added AutoJoin/PlayAgain for non-bungeecord servers.
+Added lobbyboard scoreboard interval updater.
+Fixed kit editor not updating when opening the extended kit editor.
+
 # 1.7.0
 Added fancy interactive kit creation and manager menu.
 Added a "/swk delete" command which allows you to delete a kit.

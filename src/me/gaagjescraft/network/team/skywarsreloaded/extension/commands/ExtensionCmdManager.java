@@ -17,6 +17,7 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.Impo
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.NameCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps.RenameCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player.JoinCmd;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player.LeaveCommand;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player.SelectCosmeticCmd;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,6 +40,7 @@ public class ExtensionCmdManager {
             Bukkit.getPluginCommand("skywars").setTabCompleter(new ExtensionCmdTabCompletion());
             Bukkit.getPluginCommand("swmap").setTabCompleter(new ExtensionCmdTabCompletion());
             SWExtension.get().getCommand("autojoin").setExecutor(new AutoJoinCmdManager());
+            SWExtension.get().getCommand("leave").setExecutor(new LeaveCommand());
         } catch (Exception ignored) {
         }
     }

@@ -34,7 +34,10 @@ public class AutoRejoin {
         this.startDate = new Date(Instant.now().toEpochMilli());
         autoRejoins.add(this);
 
-        Bukkit.getScheduler().runTaskLater(SWExtension.get(), () -> autoRejoins.remove(this), 60 * 60 * 20);
+        Bukkit.getScheduler().runTaskLater(SWExtension.get(), () -> {
+            autoRejoins.remove(this);
+            if (owner != null) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.canceled")));
+        }, 60 * 60 * 20);
     }
 
     public static AutoRejoin fromPlayer(Player player) {
@@ -81,12 +84,16 @@ public class AutoRejoin {
      *
      * @return -1 if unknown error, 0 if no maps, 1 if waiting for other players, 2 if success
      */
-    public int attemptJoin(boolean force) {
-        if (owner == null) { return -1;}
+    public void attemptJoin(boolean force) {
+        if (owner == null) {
+            return;
+        }
 
         List<GameMap> maps = GameMap.getPlayableArenas(type);
         if (maps.isEmpty()) {
-            return 1;
+            if (party == null) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_single")));
+            else owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_party")));
+            return;
         }
 
         HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
@@ -100,7 +107,9 @@ public class AutoRejoin {
                 break;
             }
             else if (i == keys.size()) {
-                return 0;
+                if (party == null) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_single")));
+                else owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_party")));
+                return;
             } else {
                 map = keys.get(i);
             }
@@ -108,14 +117,22 @@ public class AutoRejoin {
 
         if (party == null) {
             // player is alone.
-            if (map == null) return 0;
-            AutoRejoinHandler.cancelTeleport.add(owner.getUniqueId());
-            MatchManager.get().playerLeave(owner, EntityDamageEvent.DamageCause.CUSTOM, true, false, true);
-            AutoRejoinHandler.cancelTeleport.remove(owner.getUniqueId());
-            boolean result = map.addPlayers(null,owner);
+            if (map == null) {
+                owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_single")));
+                return;
+            }
 
-            if (result) return 2;
-            else return 0;
+            final GameMap mapFinal = map;
+            owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.searching_game")));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SWExtension.get(), () -> {
+                AutoRejoinHandler.cancelTeleport.add(owner.getUniqueId());
+                MatchManager.get().playerLeave(owner, EntityDamageEvent.DamageCause.CUSTOM, true, false, true);
+                AutoRejoinHandler.cancelTeleport.remove(owner.getUniqueId());
+                boolean result = mapFinal.addPlayers(null, owner);
+
+                if (result) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.game_found")));
+                else owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_single")));
+            },60L);
         }
         else {
             // player has company
@@ -130,7 +147,8 @@ public class AutoRejoin {
                         canJoin = MatchManager.get().getPlayerMap(player) == null || map.getSpectators().contains(uid) && !pmap.getAlivePlayers().contains(player);
 
                         if (!canJoin) {
-                            return 1;
+                            owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.waiting_party")));
+                            return;
                         }
                     }
                 }
@@ -143,12 +161,10 @@ public class AutoRejoin {
                     AutoRejoinHandler.cancelTeleport.remove(uid);
                 }
                 boolean result = map.addPlayers(null, party);
-                if (result) return 2;
-                else return 0;
+                if (result) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.game_found")));
+                else owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_party")));
             }
         }
-
-        return -1;
     }
 
 }

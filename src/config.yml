@@ -57,7 +57,21 @@ cagetype_set: '&aYou successfully set the cage type of arena %map% to %type%'
 invalid_cagetype: '&cThere is no cage type with that name. Select one from below:'
 kit_preview_give: '&aThe preview of kit &b%kit%&a has been added to your inventory.'
 
+autojoin:
+  searching_game: '&e&lFinding you a new game within 5 seconds! Hold on.'
+  something_wrong: '&cSomething went wrong with finding you a game :/'
+  no_arena_party: '&cWe couldn''t find an arena to fit you and your party members in.'
+  no_arena_single: '&cWe couldn''t find an arena to fit you in.'
+  waiting_party: '&cWaiting for your party members to finsih their game before rejoining...'
+  game_found: '&aFound a new game! Teleporting you...'
+  canceled: '&cAuto join has been canceled.'
+  cannot_use_now: '&cYou cannot use AutoJoin right now. Try again later.'
+  must_be_leader: '&cYou must be the party leader to do this.'
+  not_enabled: '&cYou don''t have AutoJoin enabled!'
+
+
 no_arena_specified_action: OPEN_JOIN_MENU
 override_item_join_actions: true
 enable_autoselect_game_options: true
 enable_autoselect_kit: true
+lobbyboard_update_interval: 20

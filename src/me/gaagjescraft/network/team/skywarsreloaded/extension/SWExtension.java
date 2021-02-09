@@ -1,9 +1,9 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.ExtensionCmdManager;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.admin.ReloadCmd;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player.LeaveCommand;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.events.AdditionsPlusHandler;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.events.SWEvents;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.features.AutoRejoinHandler;
@@ -18,7 +18,7 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -150,8 +150,6 @@ public class SWExtension extends JavaPlugin implements Listener {
             Bukkit.getLogger().log(Level.INFO, "Found Citizens. We hooked into it, and you are now able to create Skywars NPCs using the '/sw createnpc <action>' command.");
         }
 
-        getCommand("leave").setExecutor(new LeaveCommand());
-
         new ExtensionCmdManager().importCmds();
         Bukkit.getPluginManager().registerEvents(new SingleJoinMenu(), this);
         Bukkit.getPluginManager().registerEvents(new KitCreationMenu(), this);
@@ -165,14 +163,24 @@ public class SWExtension extends JavaPlugin implements Listener {
         extendedKitCreationMenu = new ExtendedKitCreationMenu();
         kitListMenu = new KitListMenu();
         kitSettingsMenu = new KitSettingsMenu();
+
+        loadSchedulers();
+    }
+
+    public void loadSchedulers() {
+        final int lobbyboardInterval = getConfig().getInt("lobbyboard_update_interval");
+        if (lobbyboardInterval > 0) {
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+                if (SkyWarsReloaded.getCfg().getSpawn() == null || SkyWarsReloaded.getCfg().getSpawn().getWorld() == null ||
+                !SkyWarsReloaded.getCfg().lobbyBoardEnabled()) return;
+                for (Player p : SkyWarsReloaded.getCfg().getSpawn().getWorld().getPlayers()) {
+                    PlayerStat.updateScoreboard(p, "lobbyboard");
+                }
+            },0, lobbyboardInterval);
+        }
     }
 
     public boolean isNewVersion() {
-        try {
-            Material.valueOf("RED_WOOL");
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return SkyWarsReloaded.getNMS().getVersion() > 13;
     }
 }
