@@ -9,17 +9,23 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.NoArenaAction;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.features.autojoin.AutoRejoinHandler;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import static me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler.getSortedGames;
 
@@ -89,7 +95,7 @@ public class JoinCmd extends BaseCmd {
                 return true;
             }
             else {
-                joinGame(player, GameType.ALL);
+                joinGame(player, GameType.ALL, null);
                 return true;
             }
         }
@@ -98,7 +104,7 @@ public class JoinCmd extends BaseCmd {
             String arena = args[1];
             if (arena.equalsIgnoreCase("solo") || arena.equalsIgnoreCase("single")) {
                 if (player.hasPermission("sw.join.solo")) {
-                    joinGame(player, GameType.SINGLE);
+                    joinGame(player, GameType.SINGLE, null);
                 } else {
                     player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_permission")));
                 }
@@ -106,7 +112,7 @@ public class JoinCmd extends BaseCmd {
             }
             else if (arena.equalsIgnoreCase("team") || arena.equalsIgnoreCase("teams")) {
                 if (player.hasPermission("sw.join.team")) {
-                    joinGame(player, GameType.TEAM);
+                    joinGame(player, GameType.TEAM, null);
                 } else {
                     player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_permission")));
                 }
@@ -141,12 +147,7 @@ public class JoinCmd extends BaseCmd {
                         GameMap map = GameMap.getMap(arena);
                         if (map != null) {
                             if ((map.getMatchState() == MatchState.WAITINGSTART || map.getMatchState() == MatchState.WAITINGLOBBY) && map.canAddPlayer()) {
-                                boolean b = map.addPlayers((TeamCard) null, player);
-                                if (b) {
-                                    player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", arena)));
-                                } else {
-                                    player.sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
-                                }
+                                joinGame(player,GameType.ALL,arena);
                             } else {
                                 // sending a message because the map is unplayable
                                 player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("cannot_join")));
@@ -163,8 +164,14 @@ public class JoinCmd extends BaseCmd {
         return true;
     }
 
-    public static void joinGame(Player player, GameType type) {
-        List<GameMap> maps = GameMap.getPlayableArenas(type);
+    public static void joinGame(Player player, GameType type, @Nullable String arenaName) {
+        Party party = Party.getParty(player);
+        if (party != null && !party.getLeader().equals(player.getUniqueId())) {
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.must_be_leader")));
+            return;
+        }
+
+        List<GameMap> maps = arenaName == null ? GameMap.getPlayableArenas(type) : Lists.newArrayList(GameMap.getMap(arenaName));
         if (maps.isEmpty()) {
             if (type == GameType.SINGLE) {
                 player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_solo_arenas")));
@@ -176,6 +183,18 @@ public class JoinCmd extends BaseCmd {
                 player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_arenas_found")));
             }
             return;
+        }
+        else if (party != null) {
+            maps.removeIf(game-> game.getPlayerCount()+party.getSize() > game.getMaxPlayers());
+            if (maps.isEmpty()) {
+                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_party")));
+                return;
+            }
+            else {
+                for (UUID uid : party.getMembers()) {
+                    MatchManager.get().playerLeave(Bukkit.getPlayer(uid), EntityDamageEvent.DamageCause.CUSTOM, true, false, true);
+                }
+            }
         }
 
         if (type == GameType.SINGLE) {
@@ -200,13 +219,18 @@ public class JoinCmd extends BaseCmd {
 
         boolean b = false;
         if (map != null) {
-            b = map.addPlayers((TeamCard) null, player);
+            if (party != null) b = map.addPlayers(null, party);
+            else b = map.addPlayers(null, player);
+
+            if (b) {
+                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                return;
+            }
         }
-        if (b) {
-            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
-        } else {
+
+        if (arenaName == null)
             player.sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
-        }
+
     }
 
 }

@@ -6,7 +6,8 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.Extension
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.admin.ReloadCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.events.AdditionsPlusHandler;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.events.SWEvents;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.features.AutoRejoinHandler;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.features.autojoin.AutoRejoinHandler;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.features.placeholders.PAPIPlaceholders;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.FileManager;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.PlayerFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
@@ -165,6 +166,7 @@ public class SWExtension extends JavaPlugin implements Listener {
         kitSettingsMenu = new KitSettingsMenu();
 
         loadSchedulers();
+        new PAPIPlaceholders();
     }
 
     public void loadSchedulers() {

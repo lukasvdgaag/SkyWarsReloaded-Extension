@@ -2,7 +2,7 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.autojoin
 
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.BaseCmd;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.features.AutoRejoin;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.features.autojoin.AutoRejoin;
 
 public class AutoJoinCancelCmd extends BaseCmd {
 

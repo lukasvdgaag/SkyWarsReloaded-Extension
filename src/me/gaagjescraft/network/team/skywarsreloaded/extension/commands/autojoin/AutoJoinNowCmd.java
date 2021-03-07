@@ -7,7 +7,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.BaseCmd;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.features.AutoRejoin;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.features.autojoin.AutoRejoin;
 
 public class AutoJoinNowCmd extends BaseCmd {
 

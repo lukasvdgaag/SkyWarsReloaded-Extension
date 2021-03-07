@@ -1,4 +1,4 @@
-package me.gaagjescraft.network.team.skywarsreloaded.extension.features;
+package me.gaagjescraft.network.team.skywarsreloaded.extension.features.autojoin;
 
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.enums.GameType;

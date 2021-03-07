@@ -9,6 +9,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player.JoinCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
@@ -93,90 +94,11 @@ public class NPCHandler implements Listener {
                 }
 
                 if (action == RANDOM_JOIN) {
-                    List<GameMap> maps = GameMap.getPlayableArenas(GameType.ALL);
-
-                    if (maps.isEmpty()) {
-                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("no_solo_arenas")));
-                        return;
-                    }
-                    e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("solo_join")));
-
-                    HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
-                    List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
-                    GameMap map = keys.get(0);
-
-                    if (sortedMaps.get(map) == 0) {
-                        // there is no game with players waiting, selecting a random game
-                        map = keys.get(new Random().nextInt(keys.size()));
-                    }
-
-                    boolean b = false;
-                    if (map != null) {
-                        b = map.addPlayers((TeamCard) null, e.getPlayer());
-                    }
-                    if (b) {
-                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
-                    } else {
-                        e.getPlayer().sendMessage(c((new Messaging.MessageFormatter()).format("error.could-not-join2")));
-                    }
+                    JoinCmd.joinGame(e.getPlayer(), GameType.ALL, null);
                 } else if (action == RANDOM_TEAM_JOIN) {
-                    int highest = 0;
-                    List<GameMap> maps = GameMap.getPlayableArenas(GameType.TEAM);
-
-                    if (maps.isEmpty()) {
-                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("no_team_arenas")));
-                        return;
-                    }
-                    e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("team_join")));
-
-                    HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
-                    List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
-                    GameMap map = keys.get(0);
-
-                    if (sortedMaps.get(map) == 0) {
-                        // there is no game with players waiting, selecting a random game
-                        map = keys.get(new Random().nextInt(keys.size()));
-                    }
-
-
-                    boolean b = false;
-                    if (map != null) {
-                        b = map.addPlayers((TeamCard) null, e.getPlayer());
-                    }
-                    if (b) {
-                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
-                    } else {
-                        e.getPlayer().sendMessage(c((new Messaging.MessageFormatter()).format("error.could-not-join2")));
-                    }
+                    JoinCmd.joinGame(e.getPlayer(), GameType.TEAM, null);
                 } else if (action == RANDOM_SOLO_JOIN) {
-                    int highest = 0;
-                    List<GameMap> maps = GameMap.getPlayableArenas(GameType.SINGLE);
-
-                    if (maps.isEmpty()) {
-                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("no_solo_arenas")));
-                        return;
-                    }
-                    e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("solo_join")));
-
-                    HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
-                    List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
-                    GameMap map = keys.get(0);
-
-                    if (sortedMaps.get(map) == 0) {
-                        // there is no game with players waiting, selecting a random game
-                        map = keys.get(new Random().nextInt(keys.size()));
-                    }
-
-
-                    boolean b = false;
-                    if (map != null) {
-                        b = map.addPlayers((TeamCard) null, e.getPlayer());
-                    }
-                    if (b) {
-                        e.getPlayer().sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
-                    } else {
-                        e.getPlayer().sendMessage(c((new Messaging.MessageFormatter()).format("error.could-not-join2")));
-                    }
+                    JoinCmd.joinGame(e.getPlayer(), GameType.SINGLE, null);
                 } else if (action == OPEN_CUSTOM_MENU) {
                     new SingleJoinMenu().openMenu(e.getPlayer(), 1);
                 } else if (action == OPEN_MENU) {

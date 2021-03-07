@@ -2,12 +2,14 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.menus;
 
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player.JoinCmd;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -291,12 +293,7 @@ public class SingleJoinMenu implements Listener {
                     HashMap<Integer, GameMap> maps = things.get(p);
                     if (maps != null && maps.containsKey(slot)) {
                         GameMap map = maps.get(slot);
-                        boolean b = map.addPlayers((TeamCard) null, p);
-                        if (b) {
-                            p.sendMessage(c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
-                        } else {
-                            p.sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
-                        }
+                        JoinCmd.joinGame(p, GameType.ALL,map.getName());
                         return;
                     }
                 }

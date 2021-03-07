@@ -1,3 +1,9 @@
+# 1.7.2
+Added a lot (30) of new placeholders.
+Added SW Party support for joining games from the extension (inluding /sw join <solo/team/arena> and NPCs)
+Add json chat message for AutoJoin // todo
+Add spectator item and menu for AutoJoin // todo
+
 # 1.7.1
 Added AutoJoin/PlayAgain for non-bungeecord servers.
 Added lobbyboard scoreboard interval updater.
