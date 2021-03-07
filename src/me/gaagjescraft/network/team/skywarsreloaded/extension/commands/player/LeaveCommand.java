@@ -40,10 +40,9 @@ public class LeaveCommand implements CommandExecutor {
 
             if (a.getTeamCard(p) == null && a.getSpectators().contains(p.getUniqueId())) {
                 a.getSpectators().remove(p.getUniqueId());
-                MatchManager.get().removeSpectator(p);
-            } else {
-                SkyWarsReloaded.get().getPlayerManager().removePlayer(p, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
             }
+            SkyWarsReloaded.get().getPlayerManager().removePlayer(p, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
+
             p.sendMessage(c(SWExtension.get().getConfig().getString("left_game")));
             return true;
         }
