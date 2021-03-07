@@ -1,7 +1,9 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.features.autojoin;
 
 import com.google.common.collect.Lists;
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.GameType;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Party;
@@ -126,7 +128,7 @@ public class AutoRejoin {
             owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.searching_game")));
             Bukkit.getScheduler().scheduleSyncDelayedTask(SWExtension.get(), () -> {
                 AutoRejoinHandler.cancelTeleport.add(owner.getUniqueId());
-                MatchManager.get().playerLeave(owner, EntityDamageEvent.DamageCause.CUSTOM, true, false, true);
+                SkyWarsReloaded.get().getPlayerManager().removePlayer(owner, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
                 AutoRejoinHandler.cancelTeleport.remove(owner.getUniqueId());
                 boolean result = mapFinal.addPlayers(null, owner);
 
@@ -157,7 +159,7 @@ public class AutoRejoin {
             if (canJoin || force) {
                 for (UUID uid : party.getMembers()) {
                     AutoRejoinHandler.cancelTeleport.add(uid);
-                    MatchManager.get().playerLeave(Bukkit.getPlayer(uid), EntityDamageEvent.DamageCause.CUSTOM, true, false, true);
+                    SkyWarsReloaded.get().getPlayerManager().removePlayer(Bukkit.getPlayer(uid), PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
                     AutoRejoinHandler.cancelTeleport.remove(uid);
                 }
                 boolean result = map.addPlayers(null, party);

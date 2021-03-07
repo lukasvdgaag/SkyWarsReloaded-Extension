@@ -51,7 +51,7 @@ public class AutoRejoinHandler implements Listener {
 
     @EventHandler
     public void onSkyWarsDeath(SkyWarsDeathEvent e) {
-        if (e.getGame().getTeamsleft() == 1) return;
+        if (e.getGame().getTeamsLeft() == 1) return;
         doJoinCheck(e.getPlayer());
     }
 
