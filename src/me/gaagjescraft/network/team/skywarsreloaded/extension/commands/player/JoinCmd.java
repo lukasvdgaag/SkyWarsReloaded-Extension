@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -192,7 +193,11 @@ public class JoinCmd extends BaseCmd {
             }
             else {
                 for (UUID uid : party.getMembers()) {
-                    MatchManager.get().playerLeave(Bukkit.getPlayer(uid), EntityDamageEvent.DamageCause.CUSTOM, true, false, true);
+                    SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                            Bukkit.getPlayer(uid),
+                            PlayerRemoveReason.PLAYER_QUIT_GAME,
+                            EntityDamageEvent.DamageCause.CUSTOM,
+                            true);
                 }
             }
         }
