@@ -7,7 +7,6 @@ import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
@@ -15,7 +14,6 @@ import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.NoArenaAction;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.features.autojoin.AutoRejoinHandler;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -193,7 +191,11 @@ public class JoinCmd extends BaseCmd {
             }
             else {
                 for (UUID uid : party.getMembers()) {
-                    SkyWarsReloaded.get().getPlayerManager().removePlayer(Bukkit.getPlayer(uid), PlayerRemoveReason.PLAYER_QUIT_GAME, EntityDamageEvent.DamageCause.CUSTOM,true);
+                    SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                            Bukkit.getPlayer(uid),
+                            PlayerRemoveReason.PLAYER_QUIT_GAME,
+                            EntityDamageEvent.DamageCause.CUSTOM,
+                            true);
                 }
             }
         }

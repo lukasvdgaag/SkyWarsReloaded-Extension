@@ -1,6 +1,5 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.features.placeholders;
 
-import com.sun.istack.internal.NotNull;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -10,9 +9,7 @@ import com.walrusone.skywarsreloaded.menus.playeroptions.PlayerOption;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
-import me.clip.placeholderapi.PlaceholderHook;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.features.autojoin.AutoRejoin;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.PlayerFile;
@@ -29,7 +26,9 @@ public class PAPIPlaceholders extends PlaceholderExpansion {
         try {
             Optional<PlaceholderExpansion> ex = PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("swr");
             ex.ifPresent(PlaceholderExpansion::unregister);
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.register();
     }
 
