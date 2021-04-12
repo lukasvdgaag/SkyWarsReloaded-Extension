@@ -1,22 +1,19 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
-import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
-import org.bukkit.*;
-import org.bukkit.block.Beacon;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 public class ImportCmd extends BaseCmd {
     
@@ -35,8 +32,10 @@ public class ImportCmd extends BaseCmd {
             return true;
         }
         
-        String worldName = args[1];
-        World world = Bukkit.getWorld(worldName);
+        final String worldName = args[1];
+        final World world = Bukkit.getWorld(worldName);
+        final GameMap gameMap;
+
         if (world == null) {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_world")));
             return true;
@@ -44,26 +43,12 @@ public class ImportCmd extends BaseCmd {
         if (GameMap.getMap(worldName) != null)  {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("arena_already_exists")));
             return true;
+        } else {
+            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_starting").replace("%map%", worldName)));
+            gameMap = GameMap.addMap(worldName);
         }
-        
-        sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_starting").replace("%map%", worldName)));
 
-        try {
-            Field field = GameMap.class.getDeclaredField("arenas");
-            field.setAccessible(true);
-            ((ArrayList<GameMap>) field.get(new GameMap(worldName))).add(new GameMap(worldName));
-        } catch (Exception e) {
-            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_error")));
-            return true;
-        }
-        
-        GameMap map = GameMap.getMap(worldName); 
-        if (map == null) {
-            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_error")));
-            return true;
-        }
-        
-        map.setEditing(true);
+        gameMap.setEditing(true);
         world.setAutoSave(true);
         
         sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_succeeded").replace("%map%", worldName)));
@@ -78,7 +63,19 @@ public class ImportCmd extends BaseCmd {
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(SWExtension.get(), () -> {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("start_legacy_load_now")));
-            int mapSize = SkyWarsReloaded.getCfg().getMaxMapSize();
+
+            // Run internal scanning system from the main plugin
+            try {
+                Method scanMethod = gameMap.getClass().getDeclaredMethod("scanChunksForSkywarsFeatures", CommandSender.class, boolean.class);
+                scanMethod.setAccessible(true);
+                scanMethod.invoke(gameMap, SWExtension.get().getServer().getConsoleSender(), false);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            // Save the new data
+            gameMap.saveArenaData();
+
+            /*int mapSize = SkyWarsReloaded.getCfg().getMaxMapSize();
             int max1 = mapSize / 2;
             int min1 = -mapSize / 2;
             Block min = world.getBlockAt(min1, 0, min1);
@@ -89,10 +86,10 @@ public class ImportCmd extends BaseCmd {
             try {
                 Field f = GameMap.class.getDeclaredField("chests");
                 f.setAccessible(true);
-                ((ArrayList<CoordLoc>) f.get(new GameMap(worldName))).clear();
+                ((ArrayList<CoordLoc>) f.get(gameMap)).clear();
                 Field f1 = GameMap.class.getDeclaredField("teamCards");
                 f1.setAccessible(true);
-                ((ArrayList<CoordLoc>) f1.get(new GameMap(worldName))).clear();
+                ((ArrayList<CoordLoc>) f1.get(gameMap)).clear();
             } catch (Exception ignored) {}
 
             int chests = 0;
@@ -112,13 +109,13 @@ public class ImportCmd extends BaseCmd {
                             if (!block.getType().equals(Material.GOLD_BLOCK) && !block.getType().equals(Material.IRON_BLOCK)
                                     && !block.getType().equals(Material.DIAMOND_BLOCK) && !block.getType().equals(Material.EMERALD_BLOCK)) {
                                 Location loc = beacon.getLocation();
-                                map.addTeamCard(loc, team);
+                                gameMap.addTeamCard(Lists.newArrayList(new CoordLoc(loc)));
                                 spawns++;
                                 team++;
                             }
                         } else if (te instanceof Chest) {
                             Chest chest = (Chest) te;
-                            map.addChest(chest, ChestPlacementType.NORMAL);
+                            gameMap.addChest(chest, ChestPlacementType.NORMAL);
                             chests++;
                         }
                     }
@@ -126,22 +123,28 @@ public class ImportCmd extends BaseCmd {
             }
 
             try {
-                Method met = GameMap.class.getDeclaredMethod("saveArenaData");
-                met.setAccessible(true);
-                met.invoke(new GameMap(worldName));
-            } catch (Exception ignored) {}
-            
+                new GameMap(worldName).saveArenaData();
+            } catch (Exception ignored) {}*/
+
+            int chests = gameMap.getChests().size();
+            int spawns = gameMap.getSpawnLocations().size();
+            int teams = gameMap.getTeamCards().size();
+
+            FileConfiguration config = SWExtension.get().getConfig();
+
             if (chests > 0) {
-                sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("chests_registered").replace("%amount%", "" + chests)));
+                sender.sendMessage(SWExtension.c(config.getString("chests_registered")
+                        .replace("%amount%", "" + chests)));
             } else {
-                sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_chests_found")));
+                sender.sendMessage(SWExtension.c(config.getString("no_chests_found")));
             }
             if (spawns > 0) {
-                sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("spawns_registered").replace("%amount%", "" + spawns)));
+                sender.sendMessage(SWExtension.c(config.getString("spawns_registered")
+                        .replace("%amount%", "" + spawns)));
             } else {
-                sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_spawns_found")));
+                sender.sendMessage(SWExtension.c(config.getString("no_spawns_found")));
             }
-            sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_done_note")));
+            sender.sendMessage(SWExtension.c(config.getString("import_done_note")));
         }, 100);
         return true;
     }
