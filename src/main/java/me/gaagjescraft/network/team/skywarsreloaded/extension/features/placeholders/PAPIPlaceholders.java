@@ -208,7 +208,9 @@ public class PAPIPlaceholders extends PlaceholderExpansion {
             }
             return "none";
         } else if (identifier.equalsIgnoreCase("cage") || identifier.equalsIgnoreCase("glasscolor")) {
-            return stat.getGlassColor();
+            PlayerOption option = GlassColorOption.getPlayerOptionByKey(stat.getGlassColor());
+            if (option == null) return "none";
+            return ChatColor.translateAlternateColorCodes('&', option.getName());
         } else if (identifier.equalsIgnoreCase("killsound")) {
             PlayerOption option = KillSoundOption.getPlayerOptionByKey(stat.getKillSound());
             if (option == null) return "none";
