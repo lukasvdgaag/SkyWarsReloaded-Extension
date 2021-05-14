@@ -7,7 +7,7 @@ softdepend:
   - Additions
 author: GaagjesCraft Network Team (GCNT)
 website: https://gaagjescraft.net/skywars/
-version: 1.7.3_SNAPSHOT-1
+version: 1.7.3_SNAPSHOT-2
 main: me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension
 
 commands:
