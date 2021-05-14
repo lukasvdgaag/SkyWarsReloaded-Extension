@@ -73,7 +73,7 @@ public class PAPIPlaceholders extends PlaceholderExpansion {
                     } else i += s.getPlayerCount();
                 }
             } else {
-                for (GameMap s : GameMap.getMaps()) {
+                for (GameMap s : GameMap.getMapsCopy()) {
                     if (identifier.toLowerCase().contains("team")) {
                         if (s.getTeamSize() > 1) i += s.getPlayerCount();
                     } else if (identifier.toLowerCase().contains("solo")) {
