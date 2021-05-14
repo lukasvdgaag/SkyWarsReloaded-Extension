@@ -4,8 +4,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.menus.playeroptions.KillSoundOption;
-import com.walrusone.skywarsreloaded.menus.playeroptions.PlayerOption;
+import com.walrusone.skywarsreloaded.menus.playeroptions.*;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -215,19 +214,19 @@ public class PAPIPlaceholders extends PlaceholderExpansion {
             if (option == null) return "none";
             return ChatColor.translateAlternateColorCodes('&', option.getName());
         } else if (identifier.equalsIgnoreCase("winsound")) {
-            PlayerOption option = KillSoundOption.getPlayerOptionByKey(stat.getWinSound());
+            PlayerOption option = WinSoundOption.getPlayerOptionByKey(stat.getWinSound());
             if (option == null) return "none";
             return ChatColor.translateAlternateColorCodes('&', option.getName());
         } else if (identifier.equalsIgnoreCase("particle_effect")) {
-            PlayerOption option = KillSoundOption.getPlayerOptionByKey(stat.getParticleEffect());
+            PlayerOption option = ParticleEffectOption.getPlayerOptionByKey(stat.getParticleEffect());
             if (option == null) return "none";
             return ChatColor.translateAlternateColorCodes('&', option.getName());
         } else if (identifier.equalsIgnoreCase("projectile_effect")) {
-            PlayerOption option = KillSoundOption.getPlayerOptionByKey(stat.getProjectileEffect());
+            PlayerOption option = ProjectileEffectOption.getPlayerOptionByKey(stat.getProjectileEffect());
             if (option == null) return "none";
             return ChatColor.translateAlternateColorCodes('&', option.getName());
         } else if (identifier.equalsIgnoreCase("taunt")) {
-            PlayerOption option = KillSoundOption.getPlayerOptionByKey(stat.getTaunt());
+            PlayerOption option = TauntOption.getPlayerOptionByKey(stat.getTaunt());
             if (option == null) return "none";
             return ChatColor.translateAlternateColorCodes('&', option.getName());
         }
