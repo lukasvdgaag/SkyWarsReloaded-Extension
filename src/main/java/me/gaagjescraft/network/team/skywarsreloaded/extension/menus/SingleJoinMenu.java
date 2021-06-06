@@ -46,7 +46,7 @@ public class SingleJoinMenu implements Listener {
 
         int pages = 1;
 
-        List<GameMap> maps = GameMap.getMaps();
+        List<GameMap> maps = GameMap.getMapsCopy();
         List<SWRServer> servers = SWRServer.getServersCopy();
 
         int arenaSize = 0;

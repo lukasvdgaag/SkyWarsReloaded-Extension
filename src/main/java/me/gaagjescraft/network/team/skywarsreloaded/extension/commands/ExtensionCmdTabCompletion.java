@@ -44,7 +44,7 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
                         args[0].equalsIgnoreCase("debug") || args[0].equalsIgnoreCase("legacyload") ||
                         args[0].equalsIgnoreCase("cage") || args[0].equalsIgnoreCase("rename")) {
                     if (Util.get().hp("map", commandSender, args[0].toLowerCase())) {
-                        for (GameMap map : GameMap.getMaps()) possibilities.add(map.getName());
+                        for (GameMap map : GameMap.getMapsCopy()) possibilities.add(map.getName());
                     }
                 } else if (args[0].equalsIgnoreCase("spawn") && Util.get().hp("map", commandSender, "spawn")) {
                     possibilities = Lists.newArrayList("player", "spec", "look", "lobby", "deathmatch");
@@ -107,8 +107,8 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
                         possibilities.add(p.getName());
                     }
                 } else if ((args[0].equalsIgnoreCase("top") || args[0].equalsIgnoreCase("hologram")) && Util.get().hp("sw", commandSender, args[0].toLowerCase())) {
-                    for (String a : SkyWarsReloaded.get().getUsable()) {
-                        possibilities.add(a.toLowerCase());
+                    for (String leaderType : SkyWarsReloaded.get().getLeaderTypes()) {
+                        possibilities.add(leaderType.toLowerCase());
                     }
                 } else if (args[0].equalsIgnoreCase("select")) {
                     possibilities.add("winsound");
