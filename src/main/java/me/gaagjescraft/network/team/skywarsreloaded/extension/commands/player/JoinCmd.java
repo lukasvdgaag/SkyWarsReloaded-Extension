@@ -163,6 +163,18 @@ public class JoinCmd extends BaseCmd {
         return true;
     }
 
+    private static void sendNoArenaAvailableMsg(Player player, GameType type) {
+        if (type == GameType.SINGLE) {
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_solo_arenas")));
+        }
+        else if (type == GameType.TEAM) {
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_team_arenas")));
+        }
+        else {
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_arenas_found")));
+        }
+    }
+
     public static void joinGame(Player player, GameType type, @Nullable String arenaName) {
         Party party = Party.getParty(player);
         if (party != null && !party.getLeader().equals(player.getUniqueId())) {
@@ -172,15 +184,7 @@ public class JoinCmd extends BaseCmd {
 
         List<GameMap> maps = arenaName == null ? GameMap.getPlayableArenas(type) : Lists.newArrayList(GameMap.getMap(arenaName));
         if (maps.isEmpty()) {
-            if (type == GameType.SINGLE) {
-                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_solo_arenas")));
-            }
-            else if (type == GameType.TEAM) {
-                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_team_arenas")));
-            }
-            else {
-                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_arenas_found")));
-            }
+            sendNoArenaAvailableMsg(player, type);
             return;
         }
         else if (party != null) {
@@ -212,6 +216,12 @@ public class JoinCmd extends BaseCmd {
 
         HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
         List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
+
+        if (keys.isEmpty()) {
+            sendNoArenaAvailableMsg(player, type);
+            return;
+        }
+
         GameMap map = keys.get(0);
 
         if (sortedMaps.get(map) == 0) {

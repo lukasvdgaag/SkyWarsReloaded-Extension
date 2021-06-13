@@ -69,7 +69,6 @@ public class NPCHandler implements Listener {
         npc.spawn(loc);
 
         NPCFile file = new NPCFile();
-        file.setLocation(npc.getId(), loc);
         file.setClickAction(npc.getId(), action);
     }
 
@@ -283,14 +282,6 @@ public class NPCHandler implements Listener {
 
                 }
             }
-        }
-    }
-
-    @EventHandler
-    public void onTP(NPCTeleportEvent e) {
-        NPCFile file = new NPCFile();
-        if (file.getNPCs().contains(e.getNPC().getId())) {
-            file.setLocation(e.getNPC().getId(), e.getTo());
         }
     }
 

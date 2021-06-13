@@ -1,3 +1,9 @@
+# 1.7.3
+Added 1.17 support.
+Added support for version v5.6.0
+Fixed IndexOutOfBoundsException occurring when trying to join a game when no games available.
+Fixed StackOverflowError occurring when teleporting a Skywars NPC using Citizens.
+
 # 1.7.2
 Added a lot (30) of new placeholders.
 Added SW Party support for joining games from the extension (inluding /sw join <solo/team/arena> and NPCs)

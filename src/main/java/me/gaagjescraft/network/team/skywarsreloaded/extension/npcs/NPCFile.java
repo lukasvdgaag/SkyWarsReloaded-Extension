@@ -67,28 +67,6 @@ public class NPCFile implements FileManager {
         return a;
     }
 
-    public void setLocation(int npcID, Location loc) {
-        if (getNPCs().contains(npcID)) {
-            NPC npc = CitizensAPI.getNPCRegistry().getById(npcID);
-            if (npc.isSpawned()) {
-                npc.teleport(loc, PlayerTeleportEvent.TeleportCause.UNKNOWN);
-            }
-            else {
-                npc.spawn(loc);
-            }
-        }
-        String loci = loc.getWorld().getName()+":"+loc.getX()+":"+loc.getY()+":"+loc.getZ()+":"+loc.getPitch()+":"+loc.getYaw();
-        getFile().set(npcID+".location",loci);
-        save();
-        reload();
-    }
-
-    public Location getLocation(int npcID) {
-        String loci = getFile().getString(npcID+".location");
-        String[] lo = loci.split(":");
-        return new Location(Bukkit.getWorld(lo[0]),Double.parseDouble(lo[1]),Double.parseDouble(lo[2]),Double.parseDouble(lo[3]),Float.parseFloat(lo[4]),Float.parseFloat(lo[5]));
-    }
-
     public void setClickAction(int npcID, NPCClickAction action) {
         getFile().set(npcID+".action",action.name());
         save();
