@@ -6,9 +6,10 @@
 
     <groupId>me.gaagjescraft</groupId>
     <artifactId>SkyWarsReloaded-Extension</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${plugin-version}</version>
 
     <properties>
+        <plugin-version>1.7.3</plugin-version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
