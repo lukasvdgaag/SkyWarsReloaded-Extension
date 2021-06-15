@@ -104,7 +104,7 @@
             <version>1.0.0</version>
             <type>jar</type>
             <scope>system</scope>
-            <systemPath>C:/Users/gaagj/OneDrive/Documents/plugins/AdditionsPlus.jar</systemPath>
+            <systemPath>${project.basedir}/lib/AdditionsPlus.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
