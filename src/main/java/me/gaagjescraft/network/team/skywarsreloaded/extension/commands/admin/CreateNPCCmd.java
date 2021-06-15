@@ -6,6 +6,8 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCClickAction;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class CreateNPCCmd extends BaseCmd {
 
@@ -18,7 +20,7 @@ public class CreateNPCCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         for (NPCClickAction ac : NPCClickAction.values()) {
             if (args[1].toUpperCase().equals(ac.name())) {
                 new NPCHandler().createNPC(player.getLocation(),ac);

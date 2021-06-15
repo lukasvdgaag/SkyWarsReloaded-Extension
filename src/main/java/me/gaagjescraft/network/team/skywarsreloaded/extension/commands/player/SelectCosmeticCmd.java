@@ -5,6 +5,8 @@ import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.playeroptions.*;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class SelectCosmeticCmd extends BaseCmd {
     
@@ -17,7 +19,7 @@ public class SelectCosmeticCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         if (player.hasPermission("sw.select")) {
 
             String type = args[1];

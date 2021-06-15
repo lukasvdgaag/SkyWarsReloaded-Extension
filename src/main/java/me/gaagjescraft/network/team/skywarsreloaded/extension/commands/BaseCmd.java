@@ -6,40 +6,37 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public abstract class BaseCmd {
-    public CommandSender sender;
-    public String[] args;
+
     public String[] alias;
     public String cmdName;
     public int argLength = 0;
     public boolean forcePlayer = true;
-    public Player player;
     public String type;
     public int maxArgs = -1;
 
     public BaseCmd() {
     }
 
-    void processCmd(CommandSender s, String[] arg) {
-        sender = s;
-        args = arg;
+    void processCmd(CommandSender sender, String[] args) {
+        Player player = null;
 
         if (forcePlayer) {
-            if (!(s instanceof Player)) {
+            if (!(sender instanceof Player)) {
                 sender.sendMessage(new Messaging.MessageFormatter().format("error.must-be-player"));
                 return;
             }
-            player = ((Player) s);
+            player = ((Player) sender);
         }
 
 
-        if (!s.hasPermission("sw." + type + "." + cmdName)) {
+        if (!sender.hasPermission("sw." + type + "." + cmdName)) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
-        } else if ((maxArgs == -1 && argLength > arg.length) || (maxArgs!=-1 && arg.length > maxArgs)) {
-            s.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + type + "." + cmdName));
+        } else if ((maxArgs == -1 && argLength > args.length) || (maxArgs!=-1 && args.length > maxArgs)) {
+            sender.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + type + "." + cmdName));
         } else {
-            boolean returnVal = run();
+            boolean returnVal = run(sender, player, args);
             if (!returnVal) {
-                s.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + type + "." + cmdName));
+                sender.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + type + "." + cmdName));
             }
         }
     }
@@ -48,5 +45,5 @@ public abstract class BaseCmd {
         return type;
     }
 
-    public abstract boolean run();
+    public abstract boolean run(CommandSender sender, Player player, String[] args);
 }

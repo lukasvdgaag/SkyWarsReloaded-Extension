@@ -6,6 +6,7 @@ import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -22,7 +23,7 @@ public class RenameCmd extends BaseCmd {
 
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String mapName = args[1];
         GameMap map = GameMap.getMap(mapName);
         if (map == null) {

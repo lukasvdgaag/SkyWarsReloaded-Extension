@@ -3,6 +3,8 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class NameCmd extends BaseCmd {
 
@@ -15,7 +17,7 @@ public class NameCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String mapName = args[1];
         GameMap map = GameMap.getMap(mapName);
 

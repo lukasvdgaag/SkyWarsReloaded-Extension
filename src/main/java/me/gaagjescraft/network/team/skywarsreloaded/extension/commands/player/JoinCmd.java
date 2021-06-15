@@ -16,6 +16,7 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.NoArenaAction;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,7 +41,7 @@ public class JoinCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         GameMap a = MatchManager.get().getPlayerMap(player);
         if (a != null) {
             player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("already_ingame")));

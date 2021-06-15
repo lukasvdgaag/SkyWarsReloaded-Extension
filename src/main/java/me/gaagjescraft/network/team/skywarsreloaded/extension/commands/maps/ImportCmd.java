@@ -26,7 +26,7 @@ public class ImportCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         if (!sender.hasPermission("sw.map.import")) {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_permission")));
             return true;

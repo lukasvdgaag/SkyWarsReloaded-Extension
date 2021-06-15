@@ -5,6 +5,8 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.cages.CageType;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
@@ -19,7 +21,7 @@ public class CageTypeCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String mapname = args[1];
         String cage = args[2];
 

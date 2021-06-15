@@ -6,6 +6,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SendCmd extends BaseCmd {
@@ -19,7 +20,7 @@ public class SendCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         Player p = Bukkit.getPlayer(args[1]);
         GameMap map = GameMap.getMap(args[2]);
         if (p == null) {

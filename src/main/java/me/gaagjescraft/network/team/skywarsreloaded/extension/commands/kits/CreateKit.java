@@ -4,6 +4,8 @@ import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class CreateKit extends BaseCmd {
@@ -17,7 +19,7 @@ public class CreateKit extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String kitname = args[1];
 
         GameKit kit = GameKit.getKit(kitname);

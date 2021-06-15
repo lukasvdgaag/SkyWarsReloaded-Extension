@@ -9,7 +9,7 @@
     <version>${plugin-version}</version>
 
     <properties>
-        <plugin-version>1.7.3</plugin-version>
+        <plugin-version>1.7.4_SNAPSHOT-1</plugin-version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -86,9 +86,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.gaagjescraft</groupId>
-            <artifactId>skywarsreloaded</artifactId>
-            <version>5.6.0_SNAPSHOT-1</version>
+            <groupId>com.walrusone</groupId>
+            <artifactId>SkywarsReloadedCore</artifactId>
+            <version>5.6.1_SNAPSHOT-1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
