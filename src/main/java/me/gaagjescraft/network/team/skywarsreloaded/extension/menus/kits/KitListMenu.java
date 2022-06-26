@@ -35,7 +35,7 @@ public class KitListMenu implements Listener {
         int kitsSize = gameKits.size();
         int pagesNeeded = (int) Math.ceil(kitsSize / 36d);
 
-        for (int page=1;page<=pagesNeeded;page++) {
+        for (int page = 1; page <= pagesNeeded; page++) {
             List<GameKit> kits = gameKits.subList((36 * page) - 36, gameKits.size());
 
             int size = 54;
@@ -48,15 +48,16 @@ public class KitListMenu implements Listener {
             }
             Inventory menu = Bukkit.createInventory(null, size, "SkyWars Kits");
 
-            for (int i=0;i<kits.size();i++) {
+            for (int i = 0; i < kits.size(); i++) {
                 GameKit kit = kits.get(i);
 
                 ItemStack item = kit.getIcon();
+                if (item == null) item = new ItemStack(Material.DIRT, 1);
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.AQUA + kit.getColorName());
                 meta.setLore(Lists.newArrayList(
                         "",
-                        ChatColor.YELLOW + "" + ChatColor.BOLD +  "Kit Info:",
+                        ChatColor.YELLOW + "" + ChatColor.BOLD + "Kit Info:",
                         ChatColor.AQUA + "Name: " + ChatColor.GRAY + kit.getFilename(),
                         ChatColor.AQUA + "Permission: " + (kit.needPermission() ? ChatColor.GRAY + "sw.kit." + kit.getFilename() : ChatColor.RED + "No permission needed."),
                         ChatColor.AQUA + "Menu position: " + ChatColor.GRAY + kit.getPosition(),
@@ -74,16 +75,15 @@ public class KitListMenu implements Listener {
             ItemStack glass;
             if (SWExtension.get().isNewVersion()) {
                 glass = new ItemStack(Material.valueOf("BLACK_STAINED_GLASS_PANE"));
-            }
-            else {
-                glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1,(byte)15);
+            } else {
+                glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (byte) 15);
             }
             ItemMeta gMeta = glass.getItemMeta();
             gMeta.setDisplayName(ChatColor.RESET + "");
             gMeta.setLore(Lists.newArrayList());
             glass.setItemMeta(gMeta);
 
-            for (int i=(size-18);i<(size-9);i++) {
+            for (int i = (size - 18); i < (size - 9); i++) {
                 menu.setItem(i, glass);
             }
 
@@ -91,21 +91,21 @@ public class KitListMenu implements Listener {
             ItemMeta cmeta = close.getItemMeta();
             cmeta.setDisplayName(ChatColor.AQUA + "Close");
             close.setItemMeta(cmeta);
-            menu.setItem(size-5, close);
+            menu.setItem(size - 5, close);
 
             if (page > 1) {
                 ItemStack item = new ItemStack(Material.ARROW);
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.AQUA + "Previous page");
                 item.setItemMeta(meta);
-                menu.setItem(size-9, item);
+                menu.setItem(size - 9, item);
             }
             if (page < pagesNeeded) {
                 ItemStack item = new ItemStack(Material.ARROW);
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.AQUA + "Next page");
                 item.setItemMeta(meta);
-                menu.setItem(size-1, item);
+                menu.setItem(size - 1, item);
             }
 
             inventoryPages.add(menu);
@@ -114,12 +114,12 @@ public class KitListMenu implements Listener {
 
     public boolean openMenu(Player player, int page) {
         if (inventoryPages.size() == 0) return false;
-        if (page-1 > inventoryPages.size()) {
-            player.openInventory(inventoryPages.get(inventoryPages.size()-1));
+        if (page - 1 > inventoryPages.size()) {
+            player.openInventory(inventoryPages.get(inventoryPages.size() - 1));
             return true;
         }
 
-        player.openInventory(inventoryPages.get(page-1));
+        player.openInventory(inventoryPages.get(page - 1));
         openPages.put(player, page);
         return true;
     }
@@ -134,7 +134,7 @@ public class KitListMenu implements Listener {
         if (e.getClickedInventory() == null || !e.getClickedInventory().equals(e.getView().getTopInventory())) return;
         int slot = e.getRawSlot();
 
-        if (slot == e.getClickedInventory().getSize()-5) {
+        if (slot == e.getClickedInventory().getSize() - 5) {
             player.closeInventory();
             return;
         }
@@ -147,8 +147,7 @@ public class KitListMenu implements Listener {
         if (e.isLeftClick()) {
             openPages.remove(player);
             SWExtension.getKitMenu().openMenu(player, clickedKit);
-        }
-        else if (e.isRightClick()) {
+        } else if (e.isRightClick()) {
             player.closeInventory();
             GameKit.giveKit(player, clickedKit);
             player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("kit_preview_give").replace("%kit%", clickedKit.getFilename())));
@@ -157,7 +156,7 @@ public class KitListMenu implements Listener {
 
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
-        openPages.remove((Player)e.getPlayer());
+        openPages.remove((Player) e.getPlayer());
     }
 
 }
