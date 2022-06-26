@@ -9,7 +9,7 @@
     <version>${plugin-version}</version>
 
     <properties>
-        <plugin-version>1.7.4_SNAPSHOT-1</plugin-version>
+        <plugin-version>1.7.6</plugin-version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
