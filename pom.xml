@@ -62,19 +62,19 @@
     <repositories>
         <repository>
             <id>bukkitmc</id>
-            <url>http://nexus.gaagjescraft.net/repository/bukkit/</url>
+            <url>https://nexuslite.gcnt.net/repository/bukkit/</url>
         </repository>
         <repository>
             <id>swr</id>
-            <url>http://nexus.gaagjescraft.net/repository/gaagjescraft/</url>
+            <url>https://nexuslite.gcnt.net/repository/gaagjescraft/</url>
         </repository>
         <repository>
             <id>everything</id>
-            <url>http://repo.citizensnpcs.co/</url>
+            <url>https://repo.citizensnpcs.co/</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
-            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
     </repositories>
 
