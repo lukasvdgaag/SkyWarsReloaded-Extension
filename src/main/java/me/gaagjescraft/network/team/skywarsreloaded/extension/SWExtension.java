@@ -116,13 +116,13 @@ public class SWExtension extends JavaPlugin implements Listener {
                         "\n" +
                         "A lot of people wanted these features.\n" +
                         "If you have new features for this plugin, make sure to join our Discord:\n" +
-                        "https://discord.gg/r7fmTC \n" +
+                        "https://gcnt.net/discord \n" +
                         "\n" +
                         "Also, make sure to go to our website to checkout our SkywarsReloaded tutorials!\n" +
-                        "http://beta.gaagjescraft.net/skywars/\n" +
+                        "http://gcnt.net/skywars/\n" +
                         "\n" +
                         "Please leave a donation :)\n" +
-                        "https://paypal.me/gaagjescraft"
+                        "https://gcnt.net/paypal"
 
         );
         saveConfig();
