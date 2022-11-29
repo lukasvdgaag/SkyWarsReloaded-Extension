@@ -9,7 +9,7 @@
     <version>${plugin-version}</version>
 
     <properties>
-        <plugin-version>1.7.6</plugin-version>
+        <plugin-version>1.7.7</plugin-version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,11 +62,11 @@
     <repositories>
         <repository>
             <id>bukkitmc</id>
-            <url>https://nexuslite.gcnt.net/repository/bukkit/</url>
+            <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
         </repository>
         <repository>
             <id>swr</id>
-            <url>https://nexuslite.gcnt.net/repository/gaagjescraft/</url>
+            <url>https://nexuslite.gcnt.net/repos/gaagjescraft/</url>
         </repository>
         <repository>
             <id>everything</id>
@@ -86,9 +86,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.walrusone</groupId>
-            <artifactId>SkywarsReloadedCore</artifactId>
-            <version>5.6.1_SNAPSHOT-1</version>
+            <groupId>net.gcnt</groupId>
+            <artifactId>skywarsreloaded</artifactId>
+            <version>5.6.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
