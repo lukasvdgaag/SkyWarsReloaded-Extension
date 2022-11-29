@@ -74,4 +74,5 @@ no_arena_specified_action: OPEN_JOIN_MENU
 override_item_join_actions: true
 enable_autoselect_game_options: true
 enable_autoselect_kit: true
+default_kit: ''
 lobbyboard_update_interval: 20
