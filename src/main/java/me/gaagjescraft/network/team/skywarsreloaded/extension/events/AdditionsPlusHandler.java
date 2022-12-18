@@ -2,7 +2,6 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.events;
 
 import com.walrusone.skywarsreloaded.events.*;
 import net.gcnt.additionsplus.AdditionsPlus;
-import net.gcnt.additionsplus.api.AdditionsPlugin;
 import net.gcnt.additionsplus.api.objects.AdditionsEvent;
 import net.gcnt.additionsplus.files.events.AdditionsPlusEvent;
 import org.bukkit.event.EventHandler;
