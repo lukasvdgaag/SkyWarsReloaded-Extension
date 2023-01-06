@@ -112,6 +112,7 @@ public class KitCreationMenu implements Listener {
         }
 
         ItemStack icon = kit.getIcon();
+        if (icon == null) icon = new ItemStack(Material.DIRT, 1);
         ItemMeta iMeta = icon.getItemMeta();
         iMeta.setDisplayName(ChatColor.GREEN + "Kit icon");
         List<String> iconLore = Lists.newArrayList(ChatColor.GRAY + "This item will be displayed when", ChatColor.GRAY + "the player has permission to select it", "",

@@ -35,7 +35,7 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
             return t.equalsIgnoreCase("party") ? sender.hasPermission("sw.party." + s) : false;
         }
     }
-    
+
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
         List<String> possibilities = Lists.newArrayList();
