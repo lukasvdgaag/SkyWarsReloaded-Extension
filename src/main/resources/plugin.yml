@@ -6,7 +6,7 @@ softdepend:
   - Citizens
   - Additions
 author: GaagjesCraft Network Team (GCNT)
-website: https://gaagjescraft.net/skywars/
+website: https://gcnt.net/skywars/
 version: ${plugin-version}
 main: me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension
 

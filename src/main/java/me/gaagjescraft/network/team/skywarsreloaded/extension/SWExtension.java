@@ -17,14 +17,17 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitList
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitSettingsMenu;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler;
+import net.gcnt.additionsplus.AdditionsPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SWExtension extends JavaPlugin implements Listener {
 
@@ -58,9 +61,10 @@ public class SWExtension extends JavaPlugin implements Listener {
     public void onEnable() {
         m = this;
         // here I'm just checking if you have SkywarsReloaded installed
+        Logger logger = Bukkit.getLogger();
         if (!Bukkit.getPluginManager().isPluginEnabled(SkyWarsReloaded.get())) {
             // if not, i'm gonna send a message and gonna disable this plugin as it won't work without
-            Bukkit.getLogger().log(Level.SEVERE, "Couldn't find SkywarsReloaded! Now disabling the plugin...");
+            logger.log(Level.SEVERE, "Couldn't find SkywarsReloaded! Now disabling the plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -68,7 +72,7 @@ public class SWExtension extends JavaPlugin implements Listener {
         try {
             SkyWarsReloaded.get().isNewVersion();
         } catch (Exception e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Found SkyWarsReloaded, but not the updated version. The updated version is required to run this extension as it has" +
+            logger.log(Level.SEVERE, "Found SkyWarsReloaded, but not the updated version. The updated version is required to run this extension as it has" +
                     " a lot of fixes and new features that are required for this plugin to run. You can get it here: https://www.spigotmc.org/resources/69436/");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
@@ -77,7 +81,7 @@ public class SWExtension extends JavaPlugin implements Listener {
         File f = new File(getDataFolder(), "config.yml");
         if (!f.exists()) {
             saveResource("config.yml", false);
-            Bukkit.getLogger().log(Level.INFO, "Created the config.yml");
+            logger.log(Level.INFO, "Created the config.yml");
         }
 
         FileManager.register(new PlayerFile());
@@ -116,31 +120,47 @@ public class SWExtension extends JavaPlugin implements Listener {
                         "\n" +
                         "A lot of people wanted these features.\n" +
                         "If you have new features for this plugin, make sure to join our Discord:\n" +
-                        "https://discord.gg/r7fmTC \n" +
+                        "https://gcnt.net/discord \n" +
                         "\n" +
                         "Also, make sure to go to our website to checkout our SkywarsReloaded tutorials!\n" +
-                        "http://beta.gaagjescraft.net/skywars/\n" +
+                        "http://gcnt.net/skywars/\n" +
                         "\n" +
                         "Please leave a donation :)\n" +
-                        "https://paypal.me/gaagjescraft"
+                        "https://gcnt.net/paypal"
 
         );
         saveConfig();
         reloadConfig();
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            Bukkit.getLogger().log(Level.INFO, "Found PlaceholderAPI. We hooked into it and registered the skywars placeholders");
-            Bukkit.getLogger().log(Level.INFO, "The official Skywars placeholders will be overwritten.");
+            logger.log(Level.INFO, "Found PlaceholderAPI. We hooked into it and registered the skywars placeholders");
+            logger.log(Level.INFO, "The official Skywars placeholders will be overwritten.");
         }
         if (Bukkit.getPluginManager().isPluginEnabled("Additions")) {
+            Plugin additionsPlugin = Bukkit.getPluginManager().getPlugin("Additions");
+            String outdatedMessage = "Found AdditionsPlus but it's outdated! Please update your AdditionsPlus plugin.";
+            String notPremiumMessage = "Found Additions, but not AdditionsPlus. You need to have AdditionsPlus installed in order to make the Custom Event Integration work.";
+            boolean foundAdditionsPlus_v2_7_x = false;
+            boolean foundAdditionsPlus_outdated = false;
+
             try {
-                Class<?> a = Class.forName("me.gaagjescraft.network.team.advancedevents.AdditionsEvent");
-            } catch (Exception ea) {
-                Bukkit.getLogger().log(Level.INFO, "Found Additions, but not AdditionsPlus. You need to have AdditionsPlus installed in order to make the Custom Event INtegration work.");
-            } finally {
-                Bukkit.getPluginManager().registerEvents(new AdditionsPlusHandler(), this);
-                Bukkit.getLogger().log(Level.INFO, "Found AdditionsPlus. Now registering the custom events.");
+                Class.forName("net.gcnt.additionsplus.AdditionsPlus");
+                String version = additionsPlugin.getDescription().getVersion();
+                if (version.startsWith("2.7.")) foundAdditionsPlus_v2_7_x = true;
+                else foundAdditionsPlus_outdated = true;
+            } catch (Exception ignored) {}
+
+            try {
+                Class.forName("me.gaagjescraft.network.team.advancedevents.AdditionsPlus");
+                foundAdditionsPlus_outdated = true;
+            } catch (Exception ignored) {}
+
+            if (foundAdditionsPlus_v2_7_x) {
+                Bukkit.getPluginManager().registerEvents(new AdditionsPlusHandler((AdditionsPlus) additionsPlugin), this);
+                logger.info("Found AdditionsPlus. Registering the custom events.");
             }
+            else if (foundAdditionsPlus_outdated) logger.warning(outdatedMessage);
+            else logger.warning(notPremiumMessage);
         }
         if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
             Bukkit.getPluginManager().registerEvents(new NPCHandler(), this);
@@ -148,7 +168,7 @@ public class SWExtension extends JavaPlugin implements Listener {
             file.setup();
             file.save();
             file.reload();
-            Bukkit.getLogger().log(Level.INFO, "Found Citizens. We hooked into it, and you are now able to create Skywars NPCs using the '/sw createnpc <action>' command.");
+            logger.log(Level.INFO, "Found Citizens. We hooked into it, and you are now able to create Skywars NPCs using the '/sw createnpc <action>' command.");
         }
 
         new ExtensionCmdManager().importCmds();

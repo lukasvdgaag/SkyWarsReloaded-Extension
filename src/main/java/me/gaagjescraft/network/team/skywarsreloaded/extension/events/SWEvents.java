@@ -8,10 +8,12 @@ import com.walrusone.skywarsreloaded.events.SkyWarsVoteEvent;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.files.PlayerFile;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,7 +41,8 @@ public class SWEvents implements Listener {
 
         if (card == null) return;
 
-        if (SWExtension.get().getConfig().getBoolean("enable_autoselect_game_options", true)) {
+        FileConfiguration config = SWExtension.get().getConfig();
+        if (config.getBoolean("enable_autoselect_game_options", true)) {
             if (p.hasPermission("sw.chestvote")) {
                 if (SkyWarsReloaded.getCfg().isChestVoteEnabled()) {
                     if (p.hasPermission("sw.autovote.chest")) {
@@ -91,17 +94,25 @@ public class SWEvents implements Listener {
                 }
             }
         }
-        if (SWExtension.get().getConfig().getBoolean("enable_autoselect_kit", true)) {
+        if (config.getBoolean("enable_autoselect_kit", true)) {
             if (p.hasPermission("sw.autovote.kit")) {
                 if (pf.getLatestKit() != null && card.getKitVote() == null) {
                     map.setKitVote(p, pf.getLatestKit());
                     yep = true;
                 }
             }
+            String defaultKit = config.getString("default_kit", "");
+            if (!defaultKit.isEmpty() && p.hasPermission("sw.autovote.default")) {
+                GameKit selectedKit = map.getSelectedKit(p);
+                if (selectedKit == null) {
+                    map.setKitVote(p, GameKit.getKit(defaultKit));
+                    yep = true;
+                }
+            }
         }
 
         if (yep) {
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("autovotes_applied")));
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("autovotes_applied")));
         }
     }
 
