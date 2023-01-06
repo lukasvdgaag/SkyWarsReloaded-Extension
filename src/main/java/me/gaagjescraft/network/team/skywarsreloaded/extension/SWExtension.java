@@ -17,7 +17,6 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitList
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitSettingsMenu;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler;
-import net.gcnt.additionsplus.AdditionsPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -138,30 +137,29 @@ public class SWExtension extends JavaPlugin implements Listener {
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("Additions")) {
-            Plugin additionsPlugin = Bukkit.getPluginManager().getPlugin("Additions");
             String outdatedMessage = "Found AdditionsPlus but it's outdated! Please update your AdditionsPlus plugin.";
             String notPremiumMessage = "Found Additions, but not AdditionsPlus. You need to have AdditionsPlus installed in order to make the Custom Event Integration work.";
             boolean foundAdditionsPlus_v2_7_x = false;
             boolean foundAdditionsPlus_outdated = false;
 
             try {
-                Class.forName("net.gcnt.additionsplus.AdditionsPlus");
-                String version = additionsPlugin.getDescription().getVersion();
-                if (version.startsWith("2.7.")) foundAdditionsPlus_v2_7_x = true;
-                else foundAdditionsPlus_outdated = true;
-            } catch (Exception ignored) {}
-
-            try {
-                Class.forName("me.gaagjescraft.network.team.advancedevents.AdditionsPlus");
-                foundAdditionsPlus_outdated = true;
-            } catch (Exception ignored) {}
+                // checking for 2.7.0+
+                net.gcnt.additionsplus.api.AdditionsPlugin ap = (net.gcnt.additionsplus.api.AdditionsPlugin) Bukkit.getPluginManager().getPlugin("Additions");
+                Bukkit.getPluginManager().registerEvents(new AdditionsPlusHandler(ap), this);
+                foundAdditionsPlus_v2_7_x = true;
+            } catch (Exception ignored) {
+                try {
+                    // checking for 2.4.0+
+                    Class.forName("net.gcnt.additionsplus.AdditionsPlus");
+                    foundAdditionsPlus_outdated = true;
+                } catch (Exception ignored2) {}
+            }
 
             if (foundAdditionsPlus_v2_7_x) {
-                Bukkit.getPluginManager().registerEvents(new AdditionsPlusHandler((AdditionsPlus) additionsPlugin), this);
                 logger.info("Found AdditionsPlus. Registering the custom events.");
             }
-            else if (foundAdditionsPlus_outdated) logger.warning(outdatedMessage);
-            else logger.warning(notPremiumMessage);
+            else if (foundAdditionsPlus_outdated) logger.severe(outdatedMessage);
+            else logger.severe(notPremiumMessage);
         }
         if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
             Bukkit.getPluginManager().registerEvents(new NPCHandler(), this);
