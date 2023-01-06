@@ -24,6 +24,18 @@ import java.util.List;
 
 public class ExtensionCmdTabCompletion implements TabCompleter {
 
+    private boolean hp(String t, CommandSender sender, String s) {
+        if (t.equalsIgnoreCase("sw")) {
+            return sender.hasPermission("sw." + s);
+        } else if (t.equalsIgnoreCase("kit")) {
+            return sender.hasPermission("sw.kit." + s);
+        } else if (t.equalsIgnoreCase("map")) {
+            return sender.hasPermission("sw.map." + s);
+        } else {
+            return t.equalsIgnoreCase("party") ? sender.hasPermission("sw.party." + s) : false;
+        }
+    }
+    
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
         List<String> possibilities = Lists.newArrayList();
@@ -32,7 +44,7 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
         if (command.getName().equalsIgnoreCase("swmap")) {
             if (args.length == 1) {
                 for (BaseCmd cmd : MapCmdManager.getCommands()) {
-                    if (Util.get().hp(cmd.getType(), commandSender, cmd.cmdName)) {
+                    if (hp(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }
                 }
@@ -43,10 +55,10 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
                         args[0].equalsIgnoreCase("min") || args[0].equalsIgnoreCase("creator") ||
                         args[0].equalsIgnoreCase("debug") || args[0].equalsIgnoreCase("legacyload") ||
                         args[0].equalsIgnoreCase("cage") || args[0].equalsIgnoreCase("rename")) {
-                    if (Util.get().hp("map", commandSender, args[0].toLowerCase())) {
+                    if (hp("map", commandSender, args[0].toLowerCase())) {
                         for (GameMap map : GameMap.getMapsCopy()) possibilities.add(map.getName());
                     }
-                } else if (args[0].equalsIgnoreCase("spawn") && Util.get().hp("map", commandSender, "spawn")) {
+                } else if (args[0].equalsIgnoreCase("spawn") && hp("map", commandSender, "spawn")) {
                     possibilities = Lists.newArrayList("player", "spec", "look", "lobby", "deathmatch");
                 } else if (args[0].equalsIgnoreCase("import")) {
                     for (World world : Bukkit.getWorlds()) {
@@ -57,7 +69,7 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
                 }
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("cage")) {
-                    if (Util.get().hp("map", commandSender, args[0].toLowerCase())) {
+                    if (hp("map", commandSender, args[0].toLowerCase())) {
                         for (CageType type : CageType.values()) {
                             possibilities.add(type.name().toLowerCase());
                         }
@@ -67,7 +79,7 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
         } else if (command.getName().equalsIgnoreCase("swkit")) {
             if (args.length == 1) {
                 for (BaseCmd cmd : KitCmdManager.getCommands()) {
-                    if (Util.get().hp(cmd.getType(), commandSender, cmd.cmdName)) {
+                    if (hp(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }
                 }
@@ -76,7 +88,7 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
                         args[0].equalsIgnoreCase("lockicon") || args[0].equalsIgnoreCase("load") || args[0].equalsIgnoreCase("lore") ||
                         args[0].equalsIgnoreCase("name") || args[0].equalsIgnoreCase("position") || args[0].equalsIgnoreCase("perm") ||
                         args[0].equalsIgnoreCase("update")) {
-                    if (Util.get().hp("kit", commandSender, args[0].toLowerCase())) {
+                    if (hp("kit", commandSender, args[0].toLowerCase())) {
                         for (GameKit kit : GameKit.getKits()) {
                             possibilities.add(kit.getName());
                         }
@@ -84,7 +96,7 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
 
                 }
             } else if (args.length == 3) {
-                if (args[0].equalsIgnoreCase("lore") && Util.get().hp("kit", commandSender, "lore")) {
+                if (args[0].equalsIgnoreCase("lore") && hp("kit", commandSender, "lore")) {
                     possibilities = Lists.newArrayList("locked", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17");
                 }
             }
@@ -92,21 +104,21 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
 
             if (args.length == 1) {
                 for (BaseCmd cmd : MainCmdManager.getCommands()) {
-                    if (Util.get().hp(cmd.getType(), commandSender, cmd.cmdName)) {
+                    if (hp(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }
                 }
             } else if (args.length == 2) {
-                if ((args[0].equalsIgnoreCase("chestadd") || args[0].equalsIgnoreCase("chestedit")) && Util.get().hp("sw", commandSender, args[0].toLowerCase())) {
+                if ((args[0].equalsIgnoreCase("chestadd") || args[0].equalsIgnoreCase("chestedit")) && hp("sw", commandSender, args[0].toLowerCase())) {
                     for (ChestType ct : ChestType.values()) {
                         possibilities.add(ct.toString().toLowerCase());
                     }
                 } else if ((args[0].equalsIgnoreCase("stats") || args[0].equalsIgnoreCase("stat") ||
-                        args[0].equalsIgnoreCase("clearstats")) && Util.get().hp("sw", commandSender, args[0].toLowerCase())) {
+                        args[0].equalsIgnoreCase("clearstats")) && hp("sw", commandSender, args[0].toLowerCase())) {
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         possibilities.add(p.getName());
                     }
-                } else if ((args[0].equalsIgnoreCase("top") || args[0].equalsIgnoreCase("hologram")) && Util.get().hp("sw", commandSender, args[0].toLowerCase())) {
+                } else if ((args[0].equalsIgnoreCase("top") || args[0].equalsIgnoreCase("hologram")) && hp("sw", commandSender, args[0].toLowerCase())) {
                     for (String leaderType : SkyWarsReloaded.get().getLeaderTypes()) {
                         possibilities.add(leaderType.toLowerCase());
                     }
@@ -123,18 +135,18 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
                     }
                 }
             } else if (args.length == 3) {
-                if (args[0].equalsIgnoreCase("chestadd") && Util.get().hp("sw", commandSender, "chestadd")) {
+                if (args[0].equalsIgnoreCase("chestadd") && hp("sw", commandSender, "chestadd")) {
                     possibilities = Lists.newArrayList("hand", "inv");
-                } else if (args[0].equalsIgnoreCase("stat") && Util.get().hp("sw", commandSender, "stat")) {
+                } else if (args[0].equalsIgnoreCase("stat") && hp("sw", commandSender, "stat")) {
                     possibilities = Lists.newArrayList("wins", "losses", "kills", "deaths", "elo", "xp", "pareffect", "proeffect", "glasscolor", "killsound", "winsound");
-                } else if (args[0].equalsIgnoreCase("hologram") && Util.get().hp("sw", commandSender, "hologram")) {
+                } else if (args[0].equalsIgnoreCase("hologram") && hp("sw", commandSender, "hologram")) {
                     LeaderType lt = LeaderType.matchType(args[1].toUpperCase());
                     if (lt != null) {
                         possibilities = SkyWarsReloaded.getHoloManager().getFormats(lt);
                     }
                 }
             } else if (args.length == 4) {
-                if (args[0].equalsIgnoreCase("stat") && Util.get().hp("sw", commandSender, "stat")) {
+                if (args[0].equalsIgnoreCase("stat") && hp("sw", commandSender, "stat")) {
                     possibilities = Lists.newArrayList("set", "add", "remove");
                 }
             }

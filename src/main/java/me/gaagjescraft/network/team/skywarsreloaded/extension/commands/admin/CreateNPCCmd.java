@@ -20,7 +20,7 @@ public class CreateNPCCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run(CommandSender sender, Player player, String[] args) {
+    public boolean run(CommandSender commandSender, Player player, String[] args) {
         for (NPCClickAction ac : NPCClickAction.values()) {
             if (args[1].toUpperCase().equals(ac.name())) {
                 new NPCHandler().createNPC(player.getLocation(),ac);

@@ -1,3 +1,7 @@
+# 1.7.5
+Added support for AdditionsPlus v2.4.0+ (You are now required to have at least this version if you have it installed!)
+Fixed some commands not working.
+
 # 1.7.3
 Added 1.17 support.
 Added support for version v5.6.0

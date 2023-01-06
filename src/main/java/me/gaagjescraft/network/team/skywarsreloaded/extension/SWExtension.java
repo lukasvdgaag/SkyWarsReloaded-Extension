@@ -132,16 +132,19 @@ public class SWExtension extends JavaPlugin implements Listener {
             Bukkit.getLogger().log(Level.INFO, "Found PlaceholderAPI. We hooked into it and registered the skywars placeholders");
             Bukkit.getLogger().log(Level.INFO, "The official Skywars placeholders will be overwritten.");
         }
+
         if (Bukkit.getPluginManager().isPluginEnabled("Additions")) {
             try {
-                Class<?> a = Class.forName("me.gaagjescraft.network.team.advancedevents.AdditionsEvent");
-            } catch (Exception ea) {
-                Bukkit.getLogger().log(Level.INFO, "Found Additions, but not AdditionsPlus. You need to have AdditionsPlus installed in order to make the Custom Event INtegration work.");
-            } finally {
+                Class.forName("me.gaagjescraft.network.team.advancedevents.AdditionsPlus");
                 Bukkit.getPluginManager().registerEvents(new AdditionsPlusHandler(), this);
-                Bukkit.getLogger().log(Level.INFO, "Found AdditionsPlus. Now registering the custom events.");
+                getLogger().info("Hooked into AdditionsPlus v2.4.0 or higher. You can now use their custom skywars events.");
+            } catch (ClassNotFoundException e) {
+                getLogger().severe("Found Additions, but the version you're using is either outdated (requires AdditionsPlus v2.4.0+) or you're using the free version.\n" +
+                        "Therefore, you can NOT use the AdditionsPlus events unless you update!\n" +
+                        "You can update here: https://gaagjescraft.net/ap");
             }
         }
+
         if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
             Bukkit.getPluginManager().registerEvents(new NPCHandler(), this);
             NPCFile file = new NPCFile();
