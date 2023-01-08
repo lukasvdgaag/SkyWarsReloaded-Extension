@@ -54,7 +54,13 @@ public class KitListMenu implements Listener {
                 ItemStack item = kit.getIcon();
                 if (item == null) item = new ItemStack(Material.DIRT, 1);
                 ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(ChatColor.AQUA + kit.getColorName());
+
+                // Kit Name
+                String kitName = kit.getName();
+                if (kitName == null) meta.setDisplayName(ChatColor.AQUA + "(no-kit-name)");
+                else meta.setDisplayName(ChatColor.AQUA + kit.getColorName());
+
+                // Lore
                 meta.setLore(Lists.newArrayList(
                         "",
                         ChatColor.YELLOW + "" + ChatColor.BOLD + "Kit Info:",
