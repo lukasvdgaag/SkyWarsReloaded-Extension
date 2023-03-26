@@ -47,7 +47,7 @@ public class ExtendedKitCreationMenu implements Listener {
 
         // setting glass decorations
         ItemStack glass;
-        if (SWExtension.get().isNewVersion()) {
+        if (SWExtension.get().isMinecraftNotLegacy()) {
             glass = new ItemStack(Material.valueOf("BLACK_STAINED_GLASS_PANE"));
         } else {
             glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (byte) 15);

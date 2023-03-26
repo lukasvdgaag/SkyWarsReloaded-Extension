@@ -38,7 +38,7 @@ public class KitSettingsMenu implements Listener {
         Inventory menu = Bukkit.createInventory(null, 36, "Skywars Kit Creator (" + kit.getFilename() + ")");
 
         ItemStack glass;
-        if (SWExtension.get().isNewVersion()) {
+        if (SWExtension.get().isMinecraftNotLegacy()) {
             glass = new ItemStack(Material.valueOf("BLACK_STAINED_GLASS_PANE"));
         }
         else {

@@ -19,10 +19,8 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.utils.SWUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -31,27 +29,27 @@ import java.util.logging.Logger;
 
 public class SWExtension extends JavaPlugin implements Listener {
 
-    private static SWExtension m;
+    private static SWExtension instance;
     private KitCreationMenu kitMenu;
     private ExtendedKitCreationMenu extendedKitCreationMenu;
     private KitListMenu kitListMenu;
     private KitSettingsMenu kitSettingsMenu;
 
     public static SWExtension get() {
-        return m;
+        return instance;
     }
 
     public static KitCreationMenu getKitMenu() {
-        return m.kitMenu;
+        return instance.kitMenu;
     }
 
     public static KitListMenu getKitListMenu() {
-        return m.kitListMenu;
+        return instance.kitListMenu;
     }
 
-    public static KitSettingsMenu getKitSettingsMenu() { return m.kitSettingsMenu; }
+    public static KitSettingsMenu getKitSettingsMenu() { return instance.kitSettingsMenu; }
 
-    public static ExtendedKitCreationMenu getExtendedKitMenu() { return m.extendedKitCreationMenu; }
+    public static ExtendedKitCreationMenu getExtendedKitMenu() { return instance.extendedKitCreationMenu; }
 
     public static String c(String str) {
         return SWUtils.c(str);
@@ -59,7 +57,8 @@ public class SWExtension extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        m = this;
+        instance = this;
+
         // here I'm just checking if you have SkywarsReloaded installed
         Logger logger = Bukkit.getLogger();
         if (!Bukkit.getPluginManager().isPluginEnabled(SkyWarsReloaded.get())) {
@@ -70,7 +69,9 @@ public class SWExtension extends JavaPlugin implements Listener {
         }
 
         try {
-            SkyWarsReloaded.get().isNewVersion();
+            SkyWarsReloaded swr = SkyWarsReloaded.get();
+            if (!swr.extensionCompatCheck(this)) return;
+            if (!swr.isNewVersion()) return;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Found SkyWarsReloaded, but not the updated version. The updated version is required to run this extension as it has" +
                     " a lot of fixes and new features that are required for this plugin to run. You can get it here: https://www.spigotmc.org/resources/69436/");
@@ -202,7 +203,7 @@ public class SWExtension extends JavaPlugin implements Listener {
         }
     }
 
-    public boolean isNewVersion() {
+    public boolean isMinecraftNotLegacy() {
         return SkyWarsReloaded.getNMS().getVersion() > 13;
     }
 }

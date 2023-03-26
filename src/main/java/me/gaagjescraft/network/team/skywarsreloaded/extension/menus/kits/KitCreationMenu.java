@@ -62,7 +62,7 @@ public class KitCreationMenu implements Listener {
         barrier.setItemMeta(bMeta);
 
         ItemStack glass;
-        if (SWExtension.get().isNewVersion()) {
+        if (SWExtension.get().isMinecraftNotLegacy()) {
             glass = new ItemStack(Material.valueOf("BLACK_STAINED_GLASS_PANE"));
         }
         else {
@@ -149,7 +149,7 @@ public class KitCreationMenu implements Listener {
         ItemMeta sMeta;
 
         if (kit.getEnabled()) {
-            if (SWExtension.get().isNewVersion())
+            if (SWExtension.get().isMinecraftNotLegacy())
                 status = new ItemStack(Material.valueOf("LIME_WOOL"));
             else
                 status = new ItemStack(Material.valueOf("WOOL"), 1, (byte) 5);
@@ -160,7 +160,7 @@ public class KitCreationMenu implements Listener {
             status.setItemMeta(sMeta);
         }
         else {
-            if (SWExtension.get().isNewVersion())
+            if (SWExtension.get().isMinecraftNotLegacy())
                 status = new ItemStack(Material.valueOf("RED_WOOL"));
             else
                 status = new ItemStack(Material.valueOf("WOOL"), 1, (byte)14);
