@@ -11,12 +11,11 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.commands.player.JoinCmd;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.utils.SWUtils;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
-import net.citizensnpcs.api.event.NPCTeleportEvent;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -30,39 +29,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
 import static me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCClickAction.*;
+import static me.gaagjescraft.network.team.skywarsreloaded.extension.utils.SWUtils.c;
 
 public class NPCHandler implements Listener {
 
     private static HashMap<Player, Boolean> cooldown = new HashMap<>(); // whether the player is on cooldown for clicking an NPC
-
-    public static HashMap<GameMap, Integer> getSortedGames(List<GameMap> hm) {
-        HashMap<GameMap, Integer> games = new HashMap<>();
-        for (GameMap g : hm) {
-            if (g.canAddPlayer()) games.put(g, g.getAllPlayers().size());
-        }
-
-        // Create a list from elements of HashMap
-        List<Map.Entry<GameMap, Integer>> list = new LinkedList<>(games.entrySet());
-
-        // Sort the list
-        Collections.sort(list, new Comparator<Map.Entry<GameMap, Integer>>() {
-            public int compare(Map.Entry<GameMap, Integer> o1,
-                               Map.Entry<GameMap, Integer> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
-            }
-        });
-
-        // put data from sorted list to hashmap
-        HashMap<GameMap, Integer> temp = new LinkedHashMap<GameMap, Integer>();
-        for (Map.Entry<GameMap, Integer> aa : list) {
-            temp.put(aa.getKey(), aa.getValue());
-        }
-        return temp;
-    }
-
-    private String c(String a) {
-        return ChatColor.translateAlternateColorCodes('&', a);
-    }
 
     public void createNPC(Location loc, NPCClickAction action) {
         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "LukasIsTheName");

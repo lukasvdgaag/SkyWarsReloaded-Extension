@@ -8,17 +8,15 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.utils.SWUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
-import static me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler.getSortedGames;
 
 public class AutoRejoin {
 
@@ -38,7 +36,8 @@ public class AutoRejoin {
 
         Bukkit.getScheduler().runTaskLater(SWExtension.get(), () -> {
             autoRejoins.remove(this);
-            if (owner != null) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.canceled")));
+            if (owner != null)
+                owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.canceled")));
         }, 60 * 60 * 20);
     }
 
@@ -82,62 +81,85 @@ public class AutoRejoin {
         return startDate;
     }
 
-    /**
-     *
-     * @return -1 if unknown error, 0 if no maps, 1 if waiting for other players, 2 if success
-     */
+
     public void attemptJoin(boolean force) {
+        this.attemptJoin(force, 0);
+    }
+
+    public void attemptJoin(boolean force, int previousAttempts) {
         if (owner == null) {
             return;
         }
 
+        // Get all available maps
         List<GameMap> maps = GameMap.getPlayableArenas(type);
-        if (maps.isEmpty()) {
-            if (party == null) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_single")));
-            else owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_party")));
+
+        // Check maps exist
+        if (maps.size() < 1) {
+            sendCantJoinNewGame();
             return;
         }
 
-        HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
+        // Sort the maps by player count
+        HashMap<GameMap, Integer> sortedMaps = SWUtils.getSortedGames(maps);
         List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
+
+
+        // Get the game with most players as default
         GameMap map = keys.get(0);
 
+        // Number of players to fit into the map
         int playerAmount = (getParty() == null ? 1 : getParty().getSize());
 
-        for (int i=0;i<=keys.size();i++) {
-            if (map.getPlayerCount() + playerAmount <= map.getMaxPlayers()) {
+        // Find a map with enough space
+        for (int i = 0; i <= keys.size(); ++i) {
+            int totalWithNewPlayers = map.getPlayerCount() + playerAmount;
+
+            if (totalWithNewPlayers <= map.getMaxPlayers()) {
+                map = keys.get(i);
                 break;
             }
-            else if (i == keys.size()) {
-                if (party == null) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_single")));
-                else owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_party")));
-                return;
-            } else {
-                map = keys.get(i);
-            }
         }
 
+        // No map found, alert user but don't abort. There is a second try later.
+        if (map == null) {
+            sendCantJoinNewGame();
+        }
+
+        // player is alone.
         if (party == null) {
-            // player is alone.
-            if (map == null) {
-                owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_single")));
-                return;
-            }
-
             final GameMap mapFinal = map;
-            owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.searching_game")));
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SWExtension.get(), () -> {
-                AutoRejoinHandler.cancelTeleport.add(owner.getUniqueId());
-                SkyWarsReloaded.get().getPlayerManager().removePlayer(owner, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
-                AutoRejoinHandler.cancelTeleport.remove(owner.getUniqueId());
-                boolean result = mapFinal.addPlayers(null, owner);
 
-                if (result) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.game_found")));
-                else owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_single")));
-            },60L);
+            if (map == null) {
+                // Only allow 2 fails total
+                if (previousAttempts > 0) return;
+
+                // Haven't failed yet? Try again in a few seconds
+                owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.searching_game")));
+                Bukkit.getScheduler().scheduleSyncDelayedTask(
+                        SWExtension.get(),
+                        () -> attemptJoin(force, 1),
+                        5 * 20L
+                ); // 5 seconds before retry
+            } else {
+                // Task to rejoin new game
+                Runnable joinNewGame = () -> {
+                    AutoRejoinHandler.cancelTeleport.add(owner.getUniqueId());
+                    SkyWarsReloaded.get().getPlayerManager().removePlayer(owner, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
+                    AutoRejoinHandler.cancelTeleport.remove(owner.getUniqueId());
+                    boolean result = mapFinal.addPlayers(null, owner);
+
+                    if (result)
+                        owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.game_found")));
+                    else
+                        sendCantJoinNewGame();
+                };
+
+                Bukkit.getScheduler().scheduleSyncDelayedTask(SWExtension.get(), joinNewGame, 20L); // 1 second later
+            }
         }
+        // player has party
         else {
-            // player has company
             boolean canJoin = false;
             if (!force) {
                 for (UUID uid : party.getMembers()) {
@@ -163,8 +185,21 @@ public class AutoRejoin {
                     AutoRejoinHandler.cancelTeleport.remove(uid);
                 }
                 boolean result = map.addPlayers(null, party);
-                if (result) owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.game_found")));
-                else owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_party")));
+                if (result)
+                    owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.game_found")));
+                else
+                    sendCantJoinNewGame();
+            }
+        }
+    }
+
+    private void sendCantJoinNewGame() {
+        if (party == null) {
+            owner.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_single")));
+        } else {
+            for (UUID uid : party.getMembers()) {
+                Player player = Bukkit.getPlayer(uid);
+                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("autojoin.no_arena_party")));
             }
         }
     }

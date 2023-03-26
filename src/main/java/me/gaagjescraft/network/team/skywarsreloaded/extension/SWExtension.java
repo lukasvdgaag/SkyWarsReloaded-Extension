@@ -17,6 +17,7 @@ import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitList
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits.KitSettingsMenu;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCFile;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.utils.SWUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -52,8 +53,8 @@ public class SWExtension extends JavaPlugin implements Listener {
 
     public static ExtendedKitCreationMenu getExtendedKitMenu() { return m.extendedKitCreationMenu; }
 
-    public static String c(String a) {
-        return ChatColor.translateAlternateColorCodes('&', a);
+    public static String c(String str) {
+        return SWUtils.c(str);
     }
 
     @Override
