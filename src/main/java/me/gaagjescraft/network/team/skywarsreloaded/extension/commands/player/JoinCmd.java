@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import static me.gaagjescraft.network.team.skywarsreloaded.extension.npcs.NPCHandler.getSortedGames;
+import static me.gaagjescraft.network.team.skywarsreloaded.extension.utils.SWUtils.getSortedGames;
 
 public class JoinCmd extends BaseCmd {
 
