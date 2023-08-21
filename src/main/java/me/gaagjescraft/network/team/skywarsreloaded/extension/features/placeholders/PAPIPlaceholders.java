@@ -1,6 +1,7 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.features.placeholders;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -9,6 +10,7 @@ import com.walrusone.skywarsreloaded.menus.playeroptions.*;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.features.autojoin.AutoRejoin;
@@ -138,6 +140,29 @@ public class PAPIPlaceholders extends PlaceholderExpansion {
             GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "timer_formatted_", ""));
             if (map != null) return Util.get().getFormattedTime(map.getTimer());
             return null;
+        }
+
+        // Leaderboard placeholders
+        if (idLower.startsWith("leaderboard_")) {
+            String leaderQuery = idLower.replace("leaderboard_", "");
+            String[] queryParts = leaderQuery.split("_");
+
+            LeaderType leaderType = null;
+            try {
+                leaderType = LeaderType.valueOf(queryParts[0].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+
+            // Full query: swr_leaderboard_wins_1_wins
+            // Leader type: wins
+            // Player rank: 1
+            // Stat to get: wins
+
+            // Flip the query to lookup the variable in the main plugin...
+            // 1_wins -> wins_1
+            String variableToSearch = queryParts[2] + "_" + queryParts[1];
+            return SWRPlaceholderAPI.getLeaderBoardVariable(variableToSearch, leaderType);
         }
 
 
