@@ -1,5 +1,6 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
@@ -19,7 +20,7 @@ public class NameCmd extends BaseCmd {
     @Override
     public boolean run(CommandSender sender, Player player, String[] args) {
         String mapName = args[1];
-        GameMap map = GameMap.getMap(mapName);
+        GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(mapName);
 
         if (map == null) {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_arena")));

@@ -1,5 +1,6 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.cages.CageType;
@@ -25,7 +26,7 @@ public class CageTypeCmd extends BaseCmd {
         String mapname = args[1];
         String cage = args[2];
 
-        GameMap map = GameMap.getMap(mapname);
+        GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(mapname);
         if (map == null) {
             player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_arena")));
             return true;

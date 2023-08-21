@@ -73,7 +73,7 @@ public class NPCHandler implements Listener {
                     new SingleJoinMenu().openMenu(e.getPlayer(), 1);
                 } else if (action == OPEN_MENU) {
                     Util.get().playSound(e.getPlayer(), e.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenJoinMenuSound(), 1.0F, 1.0F);
-                    if (GameMap.getPlayableArenas(GameType.TEAM).size() == 0) {
+                    if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.TEAM).size() == 0) {
                         if (!SkyWarsReloaded.getIC().hasViewers("joinsinglemenu")) {
                             (new BukkitRunnable() {
                                 public void run() {
@@ -86,7 +86,7 @@ public class NPCHandler implements Listener {
                         return;
                     }
 
-                    if (GameMap.getPlayableArenas(GameType.SINGLE).size() == 0) {
+                    if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.SINGLE).size() == 0) {
                         if (!SkyWarsReloaded.getIC().hasViewers("jointeammenu")) {
                             (new BukkitRunnable() {
                                 public void run() {
@@ -131,7 +131,7 @@ public class NPCHandler implements Listener {
                     if (action == RANDOM_JOIN) {
                         int highest = 0;
                         List<GameMap> maps = Lists.newArrayList();
-                        maps = GameMap.getPlayableArenas(GameType.ALL);
+                        maps = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.ALL);
 
                         if (maps.isEmpty()) {
                             player.sendMessage(c(SWExtension.get().getConfig().getString("no_solo_arenas")));
@@ -142,7 +142,7 @@ public class NPCHandler implements Listener {
                         GameMap map = null;
 
                         for (GameMap mappy : maps) {
-                            if (mappy.canAddPlayer() && highest <= mappy.getPlayerCount()) {
+                            if (mappy.canAddPlayer(player) && highest <= mappy.getPlayerCount()) {
                                 map = mappy;
                                 highest = mappy.getPlayerCount();
                             }
@@ -161,7 +161,7 @@ public class NPCHandler implements Listener {
                     } else if (action == RANDOM_TEAM_JOIN) {
                         int highest = 0;
                         List<GameMap> maps = Lists.newArrayList();
-                        maps = GameMap.getPlayableArenas(GameType.TEAM);
+                        maps = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.TEAM);
 
                         if (maps.isEmpty()) {
                             player.sendMessage(c(SWExtension.get().getConfig().getString("no_team_arenas")));
@@ -172,7 +172,7 @@ public class NPCHandler implements Listener {
                         GameMap map = null;
 
                         for (GameMap mappy : maps) {
-                            if (mappy.canAddPlayer() && highest <= mappy.getPlayerCount()) {
+                            if (mappy.canAddPlayer(player) && highest <= mappy.getPlayerCount()) {
                                 map = mappy;
                                 highest = mappy.getPlayerCount();
                             }
@@ -191,7 +191,7 @@ public class NPCHandler implements Listener {
                     } else if (action == RANDOM_SOLO_JOIN) {
                         int highest = 0;
                         List<GameMap> maps = Lists.newArrayList();
-                        maps = GameMap.getPlayableArenas(GameType.SINGLE);
+                        maps = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.SINGLE);
 
                         if (maps.isEmpty()) {
                             player.sendMessage(c(SWExtension.get().getConfig().getString("no_solo_arenas")));
@@ -202,7 +202,7 @@ public class NPCHandler implements Listener {
                         GameMap map = null;
 
                         for (GameMap mappy : maps) {
-                            if (mappy.canAddPlayer() && highest <= mappy.getPlayerCount()) {
+                            if (mappy.canAddPlayer(player) && highest <= mappy.getPlayerCount()) {
                                 map = mappy;
                                 highest = mappy.getPlayerCount();
                             }
@@ -222,7 +222,7 @@ public class NPCHandler implements Listener {
                         new SingleJoinMenu().openMenu(player, 1);
                     } else if (action == OPEN_MENU) {
                         Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenJoinMenuSound(), 1.0F, 1.0F);
-                        if (GameMap.getPlayableArenas(GameType.TEAM).size() == 0) {
+                        if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.TEAM).size() == 0) {
                             if (!SkyWarsReloaded.getIC().hasViewers("joinsinglemenu")) {
                                 (new BukkitRunnable() {
                                     public void run() {
@@ -235,7 +235,7 @@ public class NPCHandler implements Listener {
                             return;
                         }
 
-                        if (GameMap.getPlayableArenas(GameType.SINGLE).size() == 0) {
+                        if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.SINGLE).size() == 0) {
                             if (!SkyWarsReloaded.getIC().hasViewers("jointeammenu")) {
                                 (new BukkitRunnable() {
                                     public void run() {

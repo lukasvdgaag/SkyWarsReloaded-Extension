@@ -1,5 +1,6 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.admin;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -22,7 +23,7 @@ public class SendCmd extends BaseCmd {
     @Override
     public boolean run(CommandSender sender, Player player, String[] args) {
         Player p = Bukkit.getPlayer(args[1]);
-        GameMap map = GameMap.getMap(args[2]);
+        GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(args[2]);
         if (p == null) {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_player")));
             return true;
@@ -35,7 +36,7 @@ public class SendCmd extends BaseCmd {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("already_ingame_other").replace("%player%", p.getName())));
             return true;
         }
-        if (!map.canAddPlayer()) {
+        if (!map.canAddPlayer(p)) {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("cannot_join_other").replace("%player%", p.getName())));
             return true;
         }

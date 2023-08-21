@@ -92,7 +92,7 @@ public class AutoRejoin {
         }
 
         // Get all available maps
-        List<GameMap> maps = GameMap.getPlayableArenas(type);
+        List<GameMap> maps = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(type);
 
         // Check maps exist
         if (maps.size() < 1) {

@@ -4,6 +4,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -25,7 +26,8 @@ public class RenameCmd extends BaseCmd {
     @Override
     public boolean run(CommandSender sender, Player player, String[] args) {
         String mapName = args[1];
-        GameMap map = GameMap.getMap(mapName);
+        GameMapManager gameMapMgr = SkyWarsReloaded.getGameMapMgr();
+        GameMap map = gameMapMgr.getMap(mapName);
         if (map == null) {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_arena")));
             return true;
@@ -36,7 +38,7 @@ public class RenameCmd extends BaseCmd {
         }
 
         String newMapName = args[2];
-        GameMap newMap = GameMap.getMap(newMapName);
+        GameMap newMap = gameMapMgr.getMap(newMapName);
         if (newMap != null) {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("arena_already_exists")));
             return true;

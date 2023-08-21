@@ -1,7 +1,9 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -40,12 +42,13 @@ public class ImportCmd extends BaseCmd {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("invalid_world")));
             return true;
         }
-        if (GameMap.getMap(worldName) != null)  {
+        GameMapManager gameMapMgr = SkyWarsReloaded.getGameMapMgr();
+        if (gameMapMgr.getMap(worldName) != null)  {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("arena_already_exists")));
             return true;
         } else {
             sender.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("import_starting").replace("%map%", worldName)));
-            gameMap = GameMap.addMap(worldName);
+            gameMap = gameMapMgr.addMap(worldName);
         }
 
         gameMap.setEditing(true);

@@ -2,6 +2,7 @@ package me.gaagjescraft.network.team.skywarsreloaded.extension.features.placehol
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.playeroptions.*;
@@ -59,80 +60,82 @@ public class PAPIPlaceholders extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player p, String identifier) {
+        GameMapManager gameMapMgr = SkyWarsReloaded.getGameMapMgr();
+        String idLower = identifier.toLowerCase();
         if (identifier.equalsIgnoreCase("players") ||
                 identifier.equalsIgnoreCase("players_solo") ||
                 identifier.equalsIgnoreCase("players_team")) {
             int i = 0;
             if (SkyWarsReloaded.getCfg().bungeeMode() && SkyWarsReloaded.getCfg().isLobbyServer()) {
                 for (SWRServer s : SWRServer.getServersCopy()) {
-                    if (identifier.toLowerCase().contains("team")) {
+                    if (idLower.contains("team")) {
                         if (s.getTeamSize() > 1) i += s.getPlayerCount();
-                    } else if (identifier.toLowerCase().contains("solo")) {
+                    } else if (idLower.contains("solo")) {
                         if (s.getTeamSize() == 1) i += s.getPlayerCount();
                     } else i += s.getPlayerCount();
                 }
             } else {
-                for (GameMap s : GameMap.getMapsCopy()) {
-                    if (identifier.toLowerCase().contains("team")) {
+                for (GameMap s : gameMapMgr.getMapsCopy()) {
+                    if (idLower.contains("team")) {
                         if (s.getTeamSize() > 1) i += s.getPlayerCount();
-                    } else if (identifier.toLowerCase().contains("solo")) {
+                    } else if (idLower.contains("solo")) {
                         if (s.getTeamSize() == 1) i += s.getPlayerCount();
                     } else i += s.getPlayerCount();
                 }
             }
             return Integer.toString(i);
-        } else if (identifier.toLowerCase().startsWith("players_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "playing_", ""));
+        } else if (idLower.startsWith("players_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "playing_", ""));
             if (map != null) return Integer.toString(map.getPlayerCount());
             return null;
-        } else if (identifier.toLowerCase().startsWith("spectators_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "spectators_", ""));
+        } else if (idLower.startsWith("spectators_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "spectators_", ""));
             if (map != null) return Integer.toString(map.getSpectators().size());
             return null;
-        } else if (identifier.toLowerCase().startsWith("status_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "status_", ""));
+        } else if (idLower.startsWith("status_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "status_", ""));
             if (map != null) return map.getMatchState().name();
             return null;
-        } else if (identifier.toLowerCase().startsWith("creator_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "creator_", ""));
+        } else if (idLower.startsWith("creator_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "creator_", ""));
             if (map != null) return map.getDesigner();
             return null;
-        } else if (identifier.toLowerCase().startsWith("voted_chest_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_chest_", ""));
+        } else if (idLower.startsWith("voted_chest_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_chest_", ""));
             if (map != null)
                 if (map.getChestOption() != null) return map.getChestOption().getKey().replace("CHEST", "");
                 else return map.getDefaultChestType().name().replace("CHEST", "");
             return null;
-        } else if (identifier.toLowerCase().startsWith("voted_weather_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_weather_", ""));
+        } else if (idLower.startsWith("voted_weather_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_weather_", ""));
             if (map != null)
                 if (map.getWeatherOption() != null) return map.getWeatherOption().getKey().replace("WEATHER", "");
                 else return map.getDefaultWeather().name().replace("WEATHER", "");
             return null;
-        } else if (identifier.toLowerCase().startsWith("voted_health_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_health_", ""));
+        } else if (idLower.startsWith("voted_health_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_health_", ""));
             if (map != null)
                 if (map.getHealthOption() != null) return map.getHealthOption().getKey().replace("HEALTH", "");
                 else return map.getDefaultHealth().name().replace("HEALTH", "");
             return null;
-        } else if (identifier.toLowerCase().startsWith("voted_modifier_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_modifier_", ""));
+        } else if (idLower.startsWith("voted_modifier_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_modifier_", ""));
             if (map != null)
                 if (map.getModifierOption() != null) return map.getModifierOption().getKey().replace("MODIFIER", "");
                 else return map.getDefaultModifier().name().replace("MODIFIER", "");
             return null;
-        } else if (identifier.toLowerCase().startsWith("voted_time_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_time_", ""));
+        } else if (idLower.startsWith("voted_time_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "voted_time_", ""));
             if (map != null)
                 if (map.getTimeOption() != null) return map.getTimeOption().getKey().replace("TIME", "");
                 else return map.getDefaultTime().name().replace("TIME", "");
             return null;
-        } else if (identifier.toLowerCase().startsWith("timer_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "timer_", ""));
+        } else if (idLower.startsWith("timer_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "timer_", ""));
             if (map != null) return Integer.toString(map.getTimer());
             return null;
-        } else if (identifier.toLowerCase().startsWith("timer_formatted_")) {
-            GameMap map = GameMap.getMap(StringUtils.replaceIgnoreCase(identifier, "timer_formatted_", ""));
+        } else if (idLower.startsWith("timer_formatted_")) {
+            GameMap map = gameMapMgr.getMap(StringUtils.replaceIgnoreCase(identifier, "timer_formatted_", ""));
             if (map != null) return Util.get().getFormattedTime(map.getTimer());
             return null;
         }

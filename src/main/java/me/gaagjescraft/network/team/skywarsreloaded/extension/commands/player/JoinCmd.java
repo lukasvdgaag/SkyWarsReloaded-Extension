@@ -7,6 +7,7 @@ import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
@@ -57,7 +58,7 @@ public class JoinCmd extends BaseCmd {
 
                 if (SkyWarsReloaded.getCfg().joinMenuEnabled()) {
                     Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenJoinMenuSound(), 1.0F, 1.0F);
-                    if (GameMap.getPlayableArenas(GameType.TEAM).size() == 0) {
+                    if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.TEAM).size() == 0) {
                         if (!SkyWarsReloaded.getIC().hasViewers("joinsinglemenu")) {
                             (new BukkitRunnable() {
                                 public void run() {
@@ -70,7 +71,7 @@ public class JoinCmd extends BaseCmd {
                         return true;
                     }
 
-                    if (GameMap.getPlayableArenas(GameType.SINGLE).size() == 0) {
+                    if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.SINGLE).size() == 0) {
                         if (!SkyWarsReloaded.getIC().hasViewers("jointeammenu")) {
                             (new BukkitRunnable() {
                                 public void run() {
@@ -144,9 +145,9 @@ public class JoinCmd extends BaseCmd {
                         }
                     }
                     else {
-                        GameMap map = GameMap.getMap(arena);
+                        GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(arena);
                         if (map != null) {
-                            if ((map.getMatchState() == MatchState.WAITINGSTART || map.getMatchState() == MatchState.WAITINGLOBBY) && map.canAddPlayer()) {
+                            if ((map.getMatchState() == MatchState.WAITINGSTART || map.getMatchState() == MatchState.WAITINGLOBBY) && map.canAddPlayer(player)) {
                                 joinGame(player,GameType.ALL,arena);
                             } else {
                                 // sending a message because the map is unplayable
@@ -183,7 +184,8 @@ public class JoinCmd extends BaseCmd {
             return;
         }
 
-        List<GameMap> maps = arenaName == null ? GameMap.getPlayableArenas(type) : Lists.newArrayList(GameMap.getMap(arenaName));
+        GameMapManager gameMapMgr = SkyWarsReloaded.getGameMapMgr();
+        List<GameMap> maps = arenaName == null ? gameMapMgr.getPlayableArenas(type) : Lists.newArrayList(gameMapMgr.getMap(arenaName));
         if (maps.isEmpty()) {
             sendNoArenaAvailableMsg(player, type);
             return;

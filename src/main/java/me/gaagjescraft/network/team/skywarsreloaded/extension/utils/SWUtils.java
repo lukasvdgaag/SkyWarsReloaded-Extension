@@ -21,7 +21,7 @@ public class SWUtils {
     public static LinkedHashMap<GameMap, Integer> getSortedGames(List<GameMap> hm) {
         HashMap<GameMap, Integer> games = new HashMap<>();
         for (GameMap g : hm) {
-            if (g.canAddPlayer()) games.put(g, g.getAllPlayers().size());
+            if (g.canAddPlayer(null)) games.put(g, g.getAllPlayers().size());
         }
 
         // Create a list from elements of HashMap

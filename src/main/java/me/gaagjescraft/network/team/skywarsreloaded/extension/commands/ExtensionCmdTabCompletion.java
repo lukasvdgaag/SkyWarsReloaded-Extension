@@ -56,13 +56,13 @@ public class ExtensionCmdTabCompletion implements TabCompleter {
                         args[0].equalsIgnoreCase("debug") || args[0].equalsIgnoreCase("legacyload") ||
                         args[0].equalsIgnoreCase("cage") || args[0].equalsIgnoreCase("rename")) {
                     if (hp("map", commandSender, args[0].toLowerCase())) {
-                        for (GameMap map : GameMap.getMapsCopy()) possibilities.add(map.getName());
+                        for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) possibilities.add(map.getName());
                     }
                 } else if (args[0].equalsIgnoreCase("spawn") && hp("map", commandSender, "spawn")) {
                     possibilities = Lists.newArrayList("player", "spec", "look", "lobby", "deathmatch");
                 } else if (args[0].equalsIgnoreCase("import")) {
                     for (World world : Bukkit.getWorlds()) {
-                        if (GameMap.getMap(world.getName()) == null) {
+                        if (SkyWarsReloaded.getGameMapMgr().getMap(world.getName()) == null) {
                             possibilities.add(world.getName());
                         }
                     }
