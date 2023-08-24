@@ -23,10 +23,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import static me.gaagjescraft.network.team.skywarsreloaded.extension.utils.SWUtils.getSortedGames;
 
@@ -103,6 +100,14 @@ public class JoinCmd extends BaseCmd {
 
         else if (args.length == 2) {
             String arena = args[1];
+            if (arena.equalsIgnoreCase("all") || arena.equalsIgnoreCase("any")) {
+                if (player.hasPermission("sw.join.all")) {
+                    joinGame(player, GameType.ALL, null);
+                } else {
+                    player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("no_permission")));
+                }
+                return true;
+            }
             if (arena.equalsIgnoreCase("solo") || arena.equalsIgnoreCase("single")) {
                 if (player.hasPermission("sw.join.solo")) {
                     joinGame(player, GameType.SINGLE, null);
@@ -217,35 +222,34 @@ public class JoinCmd extends BaseCmd {
             player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("join_random_arena")));
         }
 
-        HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
-        List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
 
-        if (keys.isEmpty()) {
-            sendNoArenaAvailableMsg(player, type);
+//        HashMap<GameMap, Integer> sortedMaps = getSortedGames(maps);
+//        List<GameMap> keys = Lists.newArrayList(sortedMaps.keySet());
+//
+//        if (keys.isEmpty()) {
+//            sendNoArenaAvailableMsg(player, type);
+//            return;
+//        }
+//
+//        GameMap map = keys.get(0);
+//
+//        if (sortedMaps.get(map) == 0) {
+//            // there is no game with players waiting, selecting a random game
+//            map = keys.get(new Random().nextInt(keys.size()));
+//        }
+//
+//
+        GameMap result;
+        if (party != null) result = MatchManager.get().joinGame(party, type);
+        else result = MatchManager.get().joinGame(player, type);
+
+        if (result != null) {
+            player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", result.getName())));
             return;
         }
-
-        GameMap map = keys.get(0);
-
-        if (sortedMaps.get(map) == 0) {
-            // there is no game with players waiting, selecting a random game
-            map = keys.get(new Random().nextInt(keys.size()));
-        }
-
-
-        boolean b = false;
-        if (map != null) {
-            if (party != null) b = map.addPlayers(null, party);
-            else b = map.addPlayers(null, player);
-
-            if (b) {
-                player.sendMessage(SWExtension.c(SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
-                return;
-            }
-        }
-
-        if (arenaName == null)
+        else {
             player.sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
+        }
 
     }
 
