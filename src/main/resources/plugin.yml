@@ -9,6 +9,7 @@ author: GaagjesCraft Network Team (GCNT)
 website: https://gcnt.net/skywars/
 version: ${plugin-version}
 main: me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension
+api-version: 1.19
 
 commands:
   leave:

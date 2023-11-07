@@ -134,7 +134,7 @@ public class KitCreationMenu implements Listener {
         menu.setItem(9, icon);
         menu.setItem(18, noIcon);
 
-        ItemStack slotAmount = new ItemStack(Material.WORKBENCH);
+        ItemStack slotAmount = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta sameta = slotAmount.getItemMeta();
         sameta.setDisplayName(ChatColor.AQUA + "Other Kit Settings");
         sameta.setLore(Lists.newArrayList("",
