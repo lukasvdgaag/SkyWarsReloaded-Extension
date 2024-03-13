@@ -1,7 +1,9 @@
 package me.gaagjescraft.network.team.skywarsreloaded.extension.menus.kits;
 
 import com.google.common.collect.Lists;
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
+import com.walrusone.skywarsreloaded.nms.NMS;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -134,15 +136,21 @@ public class KitCreationMenu implements Listener {
         menu.setItem(9, icon);
         menu.setItem(18, noIcon);
 
-        ItemStack slotAmount = new ItemStack(Material.WORKBENCH);
-        ItemMeta sameta = slotAmount.getItemMeta();
-        sameta.setDisplayName(ChatColor.AQUA + "Other Kit Settings");
-        sameta.setLore(Lists.newArrayList("",
+        Material craftingTable;
+        NMS nms = SkyWarsReloaded.getNMS();
+        int version = nms.getVersion();
+        if (version >= 13) craftingTable = Material.CRAFTING_TABLE;
+        else craftingTable = Material.getMaterial("WORKBENCH");
+
+        ItemStack slotAmount = new ItemStack(craftingTable);
+        ItemMeta slotAmountItemMeta = slotAmount.getItemMeta();
+        slotAmountItemMeta.setDisplayName(ChatColor.AQUA + "Other Kit Settings");
+        slotAmountItemMeta.setLore(Lists.newArrayList("",
                 ChatColor.GRAY + "Change other kit settings such as the lore,",
                 ChatColor.GRAY + "the menu position, display name, and permission node.", "",
                 ChatColor.GOLD + "Left click" + ChatColor.YELLOW + " to increase the slot by +1",
                 ChatColor.GOLD + "Right click" + ChatColor.YELLOW + " to decrease the slot by -1"));
-        slotAmount.setItemMeta(sameta);
+        slotAmount.setItemMeta(slotAmountItemMeta);
         menu.setItem(27, slotAmount);
 
         ItemStack status;
